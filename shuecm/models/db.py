@@ -22,11 +22,11 @@ class Instance(ContextInstanceMixin):
     uMongo DB instance.
     """
 
-    def __init__(self, db: DB = None):
-        if not db:
+    def __init__(self, db_: DB = None):
+        if not db_:
             self.db = DB.get_current().db
         else:
-            self.db = db
+            self.db = db_
 
         self.instance = umongo.Instance(self.db)
 
