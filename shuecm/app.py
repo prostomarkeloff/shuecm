@@ -18,8 +18,9 @@ async def run():
 
     dp.setup_blueprint(info_bp)
 
-    from shuecm.middlewares import RegistrationMiddleware
+    from shuecm.middlewares import RegistrationMiddleware, BotAdminMiddleware
 
+    dp.setup_middleware(BotAdminMiddleware())
     dp.setup_middleware(RegistrationMiddleware())
 
     pre_start_db(vk.loop)

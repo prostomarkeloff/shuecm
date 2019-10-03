@@ -318,10 +318,9 @@ pydantic = "*"
 watchgod = "*"
 
 [package.source]
-reference = "4cfba67d9d55f88e19a1c2ef2f099ac4de1a3e83"
+reference = "67708fc87f6a54ae6f358d64265a92b8d7abd632"
 type = "git"
 url = "https://github.com/prostomarkeloff/vk.py"
-
 [[package]]
 category = "main"
 description = "Simple, modern file watching and code reload in python."
