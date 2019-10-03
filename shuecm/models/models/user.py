@@ -1,3 +1,4 @@
+import time
 import typing
 
 import umongo
@@ -15,28 +16,29 @@ class User(umongo.Document):  # noqa
     """
 
     uid = fields.IntegerField(required=True, unique=True)
+    created_time = fields.IntegerField(default=time.time)
 
     class Meta:
         collection = instance.db.users
 
+    @staticmethod
+    async def create_user(uid: int) -> typing.Optional[typing.NoReturn]:
+        """
+        Create user in database or raise exception. - umongo.exceptions.UMongoError
+        :param uid:
+        :return:
+        """
+        user = User(uid=uid)
+        await user.commit()
 
-async def create_user(uid: int) -> typing.Optional[typing.NoReturn]:
-    """
-    Create user in database or raise exception. - umongo.exceptions.UMongoError
-    :param uid:
-    :return:
-    """
-    user = User(uid=uid)
-    await user.commit()
-
-
-async def get_user(uid: int) -> typing.Union[User, typing.NoReturn]:
-    """
-    Lookup user in database via UID.
-    :param uid:
-    :return:
-    """
-    user = await User.find_one({"uid": uid})
-    if not user:
-        return  # check this state such as: if not user: return await message.answer("something..")
-    return user
+    @staticmethod
+    async def get_user(uid: int) -> typing.Union["User", typing.NoReturn]:
+        """
+        Lookup user in database via UID.
+        :param uid:
+        :return:
+        """
+        user = await User.find_one({"uid": uid})
+        if not user:
+            return  # check this state such as: if not user: return await message.answer("something..")
+        return user
