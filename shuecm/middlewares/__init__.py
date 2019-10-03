@@ -1,2 +1,3 @@
 from .bot_admin import BotAdminMiddleware
-from .registration import RegistrationMiddleware
+from .registration import ChatsRegistrationMiddleware
+from .registration import UsersRegistrationMiddleware

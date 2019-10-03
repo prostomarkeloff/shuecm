@@ -18,12 +18,17 @@ async def run():
 
     dp.setup_blueprint(info_bp)
 
-    from shuecm.middlewares import RegistrationMiddleware, BotAdminMiddleware
+    from shuecm.middlewares import (
+        UsersRegistrationMiddleware,
+        BotAdminMiddleware,
+        ChatsRegistrationMiddleware,
+    )
 
     dp.setup_middleware(BotAdminMiddleware())
-    dp.setup_middleware(RegistrationMiddleware())
+    dp.setup_middleware(ChatsRegistrationMiddleware())
+    dp.setup_middleware(UsersRegistrationMiddleware())
 
-    pre_start_db(vk.loop)
+    pre_start_db(vk.loop, drop_db=True)
     dp.run_polling()
 
 
