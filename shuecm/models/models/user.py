@@ -28,9 +28,8 @@ class User(umongo.Document):  # noqa
         :param uid:
         :return:
         """
-        user = User(uid=uid)
+        user: User = User(uid=uid)
         result = await user.commit()
-        user = await User.find_one({"_id": result.inserted_id})
         return user
 
     @staticmethod
@@ -41,6 +40,4 @@ class User(umongo.Document):  # noqa
         :return:
         """
         user = await User.find_one({"uid": uid})
-        if not user:
-            return  # check this state such as: if not user: return await message.answer("something..")
         return user
