@@ -22,14 +22,16 @@ class User(umongo.Document):  # noqa
         collection = instance.db.users
 
     @staticmethod
-    async def create_user(uid: int) -> typing.Optional[typing.NoReturn]:
+    async def create_user(uid: int) -> typing.Union["User", typing.NoReturn]:
         """
         Create user in database or raise exception. - umongo.exceptions.UMongoError
         :param uid:
         :return:
         """
         user = User(uid=uid)
-        await user.commit()
+        result = await user.commit()
+        user = await User.find_one({"_id": result.inserted_id})
+        return user
 
     @staticmethod
     async def get_user(uid: int) -> typing.Union["User", typing.NoReturn]:
