@@ -29,7 +29,7 @@ class User(umongo.Document):  # noqa
         :return:
         """
         user: User = User(uid=uid)
-        result = await user.commit()
+        await user.commit()
         return user
 
     @staticmethod
