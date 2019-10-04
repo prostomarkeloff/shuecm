@@ -9,6 +9,8 @@ from vk.utils.get_event import get_event_object
 
 from db.models import Chat
 from db.models.user import User
+from shuecm.context import current_chat
+from shuecm.context import current_user
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +28,7 @@ class UsersRegistrationMiddleware(BaseMiddleware):
         usr: User = await User.get_user(event.object.from_id)
         if usr:
             data["current_user"] = usr  # place the user object to data
+            current_user.set(usr)  # change context
             return data
 
         usr = await User.create_user(uid=event.object.from_id)
@@ -34,6 +37,7 @@ class UsersRegistrationMiddleware(BaseMiddleware):
             f"[id{event.object.from_id}| Пользователь] успешно зарегистрирован!"
         )
         data["current_user"] = usr  # place the user object to data
+        current_user.set(usr)  # change context
         return data
 
     async def post_process_event(self) -> None:
@@ -56,12 +60,14 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
         chat: Chat = await Chat.get_chat(event.object.peer_id)
         if chat:
             data["current_chat"] = chat  # place the chat object to data
+            current_chat.set(chat)  # change context
             return data
 
         chat: Chat = await Chat.create_chat(event.object.peer_id)
         logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
         await event.object.answer(f"Данный чат успешно зарегистрирован!")
         data["current_chat"] = chat  # place the chat object to data
+        current_chat.set(chat)  # change context
         return data
 
     async def post_process_event(self) -> None:
