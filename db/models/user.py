@@ -4,7 +4,7 @@ import typing
 import umongo
 from umongo import fields
 
-from .chat import Chat  # noqa. this used for uMongo reference.
+from .chat import Chat
 from db.db import Instance
 
 instance: umongo.Instance = Instance.get_current().instance
@@ -42,3 +42,15 @@ class User(umongo.Document):  # noqa
         """
         user = await User.find_one({"uid": uid})
         return user
+
+
+@instance.register
+class UserInChat(umongo.Document):  # noqa
+
+    chat = fields.ReferenceField(Chat)  # reference to current chat
+    status = fields.IntegerField(
+        default=1
+    )  # status of user. will be converted to `db.structs.Status`
+
+    class Meta:
+        collection = instance.db.users_in_chats
