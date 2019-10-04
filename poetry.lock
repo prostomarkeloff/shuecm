@@ -437,7 +437,7 @@ pydantic = "*"
 watchgod = "*"
 
 [package.source]
-reference = "e58d2c5cd52c7f39e307a31fb752e76de376c170"
+reference = "d8d5945ebf3b180ed6883a53dba7a37b4623d2b8"
 type = "git"
 url = "https://github.com/prostomarkeloff/vk.py"
 [[package]]
