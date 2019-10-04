@@ -3,6 +3,7 @@
 <img src="https://img.shields.io/badge/python-3.6%2B-blue">
 <a href="https://github.com/shueteam/shuecm/blob/master/LICENSE"><img src="https://img.shields.io/github/license/SevereCloud/vksdk.svg?maxAge=2592000"></a>
 <a href="https://vk.com/shuecm"><img src="https://img.shields.io/badge/chat-manager-%234a76a8.svg?logo=VK&logoColor=white"></a>
+<img src="https://img.shields.io/badge/%D0%A8%D0%A3%D0%95-%D0%9F%D0%9F%D0%A8-red">
 </p>
 
 #### Чат - менеджер нового поколения для [Вконтакте](https://vk.com/)
