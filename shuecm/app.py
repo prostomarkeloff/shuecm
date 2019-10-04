@@ -11,7 +11,6 @@ from shuecm.config import SENTRY_DSN
 from shuecm.config import VK_GROUP_ID
 from shuecm.config import VK_TOKEN
 
-
 logging.basicConfig(level=LOGGING_LEVEL)
 logger = logging.getLogger("shuecm.app")
 
@@ -50,12 +49,19 @@ def setup_middlewares():
     dp.setup_middleware(UsersRegistrationMiddleware())
 
 
+def setup_rules():
+    from shuecm.rules import Texts
+
+    dp.setup_rule(Texts)
+
+
 async def run():
     pre_start_db(vk.loop)
 
     setup_sentry()
     setup_blueprints()
     setup_middlewares()
+    setup_rules()
 
     dp.run_polling()
 
