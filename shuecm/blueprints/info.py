@@ -20,3 +20,11 @@ async def who_i_am_handler(message: types.Message, data: dict):
     await message.answer(
         f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
     )
+
+
+@bp.message_handler(text="кто ты", with_reply_message=True)
+async def who_are_you_handler(message: types.Message, data: dict):
+    usr: User = await User.get_user(message.reply_message.from_id)
+    await message.answer(
+        f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
+    )
