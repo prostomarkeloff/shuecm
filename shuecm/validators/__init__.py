@@ -31,4 +31,5 @@ async def valid_id_in_db(arg: str, message: types.Message):
     if not usr:
         await message.answer(bad_answer)
         return False
+
     return {"valid_id_in_db_user": usr}
