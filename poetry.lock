@@ -15,6 +15,14 @@ yarl = ">=1.0,<2.0"
 
 [[package]]
 category = "main"
+description = "A Pythonic Helper for DBAPI-2.0 SQL Access"
+name = "antiorm"
+optional = false
+python-versions = "*"
+version = "1.2.1"
+
+[[package]]
+category = "main"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
 optional = false
@@ -113,6 +121,17 @@ name = "colorama"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "0.4.1"
+
+[[package]]
+category = "main"
+description = "Databases for Humans"
+name = "db"
+optional = false
+python-versions = "*"
+version = "0.1.1"
+
+[package.dependencies]
+antiorm = "*"
 
 [[package]]
 category = "main"
@@ -440,6 +459,7 @@ watchgod = "*"
 reference = "d8d5945ebf3b180ed6883a53dba7a37b4623d2b8"
 type = "git"
 url = "https://github.com/prostomarkeloff/vk.py"
+
 [[package]]
 category = "main"
 description = "Simple, modern file watching and code reload in python."
@@ -480,11 +500,12 @@ version = "0.6.0"
 more-itertools = "*"
 
 [metadata]
-content-hash = "0adc6bd733017e2d53bb4e8cc38519d1ed237f9c4c937d79b60545c1cc183746"
+content-hash = "95c68afcaf582d478fdb68ec8474e4c7c690222ca8df4b33d623a3d3cafd626d"
 python-versions = "^3.7"
 
 [metadata.hashes]
 aiohttp = ["022c400e30848b1994236e31fb38db1dc4b551efe049f737cbac690ab2cdf5c4", "10f9316ef068536dec0b9f09531fa1cb6bfa8394f278022cb96e789c77811ad2", "2599b93fd5ba1120b3bd1366d67a7e26bd45b3d5d5548069e00b2fbef7f20ab0", "2a1c71e7fb8c50e60fb4c9bab8bd5cf7c07f91a6b27dc2556d7354cd2ebb3689", "6a19d34cc01414d94dd5a4466f8f397293fcb8929df8eeb8989119cc5ef928bb", "7aab39c2a61a5c6b15bb7e561218ef64770ca1fbf4cc1878c96e630e2b7cc3cc", "8959e28bc1b87542b0ee4a8302128f633bee296252f261bf03e118c4dff725f0", "89820f7c488f4e9b1f74371da33403181e11e006663ddf074317aacd690838a6", "ab761cf0f0b0b90887e276b4a7918f11e323f2228bbb30814bbd538c122028bf", "cc648ecaca79e37c6e26f370e802e7ae640a069913f661f66c0421084bef219a", "d6f26e80cd55ac88e1f0397fc8d547933225a5dc1add040e27788c2a028c64c6", "e7d6ae4a36bfe6d7f93c6f42a0bfa1659f7d011006cb6e8207c85ef5acdb2986", "fc55b1fec0e4cc1134ffb09ea3970783ee2906dc5dfd7cd16917913f2cfed65b"]
+antiorm = ["96eb1841ce5163db4cf1dc13f4499ec2d7cffc190cf724b78ffdd3e6b7c4ff93"]
 appdirs = ["9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92", "d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"]
 "aspy.yaml" = ["463372c043f70160a9ec950c3f1e4c3a82db5fca01d334b6bc89c7164d744bdc", "e7c742382eff2caed61f87a39d13f99109088e5e93f04d76eb8d4b28aa143f45"]
 async-timeout = ["0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f", "4291ca197d287d274d0b6cb5d6f8f8f82d434ed288f962539ff18cc9012f9ea3"]
@@ -496,6 +517,7 @@ cfgv = ["edb387943b665bf9c434f717bf630fa78aecd53d5900d2e05da6ad6048553144", "fbd
 chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
 click = ["2335065e6395b9e67ca716de5f7526736bfa6ceead690adf616d925bdc622b13", "5b94b49521f6456670fdb30cd82a4eca9412788a93fa6dd6df72c94d5a8ff2d7"]
 colorama = ["05eed71e2e327246ad6b38c540c4a3117230b19679b875190486ddd2d721422d", "f8ac84de7840f5b9c4e3347b3c1eaa50f7e49c2b07596221daec5edaabbd7c48"]
+db = ["980e772f15c1161d3b287ffec4f144e40961b0b3e6d5102809577870bf6c5808"]
 dnspython = ["36c5e8e38d4369a08b6780b7f27d790a292b2b08eea01607865bf0936c558e01", "f69c21288a962f4da86e56c4905b49d11aba7938d3d740e80d9e366ee4f1632d"]
 environs = ["59bea3c982fbcc9d0755d160f67e725b70227ecbc14f7507ac81f484c6fd8334", "e0a6c53b05effbb7521374e564eb751ba2311bd36dcde2c7d914246175b8e02d"]
 fastapi = ["2e44ff5fdc307dc2820b6bac3a1ea97e399634457d37f0aee46b8633927145fa", "d00c10143131d32fc1504a6b0676807629d838703f723a204a47c7f4d7784a78"]

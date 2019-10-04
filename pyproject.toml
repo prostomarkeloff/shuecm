@@ -17,6 +17,8 @@ black = "19.3b0"
 sentry-sdk = "^0.12.3"
 fastapi = "^0.39.0"
 uvicorn = "^0.9.0"
+db = "^0.1.1"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
