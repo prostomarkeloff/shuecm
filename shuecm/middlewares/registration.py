@@ -46,6 +46,7 @@ class UsersRegistrationMiddleware(BaseMiddleware):
                     user_in_chat: UserInChat = await UserInChat.create_user(
                         usr, chat=data["current_chat"]
                     )
+                    await User.add_account(usr, user_in_chat.pk)  # add new account
                 data["current_user_in_chat"] = user_in_chat
                 current_user_in_chat.set(user_in_chat)
             return data
@@ -67,6 +68,7 @@ class UsersRegistrationMiddleware(BaseMiddleware):
                 )
                 data["current_user_in_chat"] = user_in_chat
                 current_user_in_chat.set(user_in_chat)
+                await User.add_account(usr, user_in_chat.pk)  # add new account
         return data
 
     async def post_process_event(self) -> None:
@@ -112,6 +114,7 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             user_in_chat = await UserInChat.create_user(
                 user=usr.pk, chat=chat.pk, status=status
             )
+            await User.add_account(usr, user_in_chat.pk)  # add new account
 
         logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
         await event.object.answer(f"Данный чат успешно зарегистрирован!")

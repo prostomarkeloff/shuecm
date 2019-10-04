@@ -58,6 +58,20 @@ class User(umongo.Document):  # noqa
         user = await User.find_one({"accounts": document_id})
         return user
 
+    @staticmethod
+    async def add_account(usr: "User", document_id: str):
+        """
+        Add user account to accounts list.
+        :param usr: user object
+        :param document_id: document '_id' of new account
+        :return:
+        """
+        current: dict = usr.dump()
+        accs: list = current["accounts"]
+        accs.append(document_id)
+        usr.update({"accounts": accs})
+        return await usr.commit()
+
 
 @instance.register
 class UserInChat(umongo.Document):  # noqa
@@ -65,8 +79,8 @@ class UserInChat(umongo.Document):  # noqa
     User in something chat.
     """
 
-    user = fields.ReferenceField(User)  # reference to main data about user
-    chat = fields.ReferenceField(Chat)  # reference to current chat
+    user: User = fields.ReferenceField(User)  # reference to main data about user
+    chat: Chat = fields.ReferenceField(Chat)  # reference to current chat
     status = fields.IntegerField(
         default=1
     )  # status of user. will be converted to `db.structs.Status`

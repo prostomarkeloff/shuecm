@@ -12,6 +12,11 @@ from shuecm.validators import valid_id_in_db
 bp = Blueprint()
 
 
+@bp.message_handler(text="!помощь")
+async def test_handler(message: types.Message, data: dict):
+    await message.answer("Привет!")
+
+
 @bp.described_handler(
     description="Обработчик для получения информации о себе",
     options=["Написать 'кто я'"],
