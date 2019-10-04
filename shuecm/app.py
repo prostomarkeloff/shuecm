@@ -5,12 +5,14 @@ from vk.bot_framework import Dispatcher
 from vk.utils import TaskManager
 
 from db.prestart import pre_start as pre_start_db
+from shuecm.config import LOGGING_LEVEL
 from shuecm.config import PRODUCTION
 from shuecm.config import SENTRY_DSN
 from shuecm.config import VK_GROUP_ID
 from shuecm.config import VK_TOKEN
 
-logging.basicConfig(level="INFO")
+
+logging.basicConfig(level=LOGGING_LEVEL)
 logger = logging.getLogger("shuecm.app")
 
 vk = VK(VK_TOKEN)
