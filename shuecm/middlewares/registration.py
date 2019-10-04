@@ -19,21 +19,21 @@ class UsersRegistrationMiddleware(BaseMiddleware):
     """
 
     async def pre_process_event(self, event: dict, data: dict) -> dict:
-        if event["type"] == "message_new":
-            event: MessageNew = get_event_object(event)
-            usr: User = await User.get_user(event.object.from_id)
-            if usr:
-                data["current_user"] = usr  # place the user object to data
-                return data
-            else:
-                usr = await User.create_user(uid=event.object.from_id)
-                logger.info(
-                    f"User with id ({event.object.from_id}) succesfully registered!"
-                )
-                await event.object.answer(
-                    f"[id{event.object.from_id}| Пользователь] успешно зарегистрирован!"
-                )
-                data["current_user"] = usr  # place the user object to data
+        if event["type"] != "message_new":
+            return data
+
+        event: MessageNew = get_event_object(event)
+        usr: User = await User.get_user(event.object.from_id)
+        if usr:
+            data["current_user"] = usr  # place the user object to data
+            return data
+
+        usr = await User.create_user(uid=event.object.from_id)
+        logger.info(f"User with id ({event.object.from_id}) succesfully registered!")
+        await event.object.answer(
+            f"[id{event.object.from_id}| Пользователь] успешно зарегистрирован!"
+        )
+        data["current_user"] = usr  # place the user object to data
         return data
 
     async def post_process_event(self) -> None:
@@ -46,21 +46,22 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
     """
 
     async def pre_process_event(self, event: dict, data: dict) -> dict:
-        if event["type"] == "message_new":
-            event: MessageNew = get_event_object(event)
-            if event.object.from_id == event.object.peer_id:
-                return data
-            chat: Chat = await Chat.get_chat(event.object.peer_id)
-            if chat:
-                data["current_chat"] = chat  # place the chat object to data
-                return data
-            else:
-                chat: Chat = await Chat.create_chat(event.object.peer_id)
-                logger.info(
-                    f"Chat with id ({event.object.peer_id}) succesfully registered!"
-                )
-                await event.object.answer(f"Данный чат успешно зарегистрирован!")
-                data["current_chat"] = chat  # place the chat object to data
+        if event["type"] != "message_new":
+            return data
+
+        event: MessageNew = get_event_object(event)
+        if event.object.from_id == event.object.peer_id:
+            return data
+
+        chat: Chat = await Chat.get_chat(event.object.peer_id)
+        if chat:
+            data["current_chat"] = chat  # place the chat object to data
+            return data
+
+        chat: Chat = await Chat.create_chat(event.object.peer_id)
+        logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
+        await event.object.answer(f"Данный чат успешно зарегистрирован!")
+        data["current_chat"] = chat  # place the chat object to data
         return data
 
     async def post_process_event(self) -> None:
