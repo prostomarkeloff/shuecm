@@ -4,6 +4,7 @@ import typing
 import umongo
 from umongo import fields
 
+from .chat import Chat  # noqa. this used for uMongo reference.
 from db.db import Instance
 
 instance: umongo.Instance = Instance.get_current().instance

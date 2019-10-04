@@ -4,6 +4,7 @@ Registration middleware for shuecm.
 import logging
 
 from vk.bot_framework import BaseMiddleware
+from vk.bot_framework import SkipHandler
 from vk.types.events.community.event import MessageNew
 from vk.utils.get_event import get_event_object
 
@@ -25,6 +26,9 @@ class UsersRegistrationMiddleware(BaseMiddleware):
             return data
 
         event: MessageNew = get_event_object(event)
+        if event.object.from_id <= 0:
+            raise SkipHandler()
+
         usr: User = await User.get_user(event.object.from_id)
         if usr:
             data["current_user"] = usr  # place the user object to data
