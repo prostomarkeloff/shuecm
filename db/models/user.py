@@ -13,7 +13,7 @@ instance: umongo.Instance = Instance.get_current().instance
 @instance.register
 class User(umongo.Document):  # noqa
     """
-    User document in database
+    Main user document in database
     """
 
     uid = fields.IntegerField(required=True, unique=True)
@@ -61,11 +61,20 @@ class User(umongo.Document):  # noqa
 
 @instance.register
 class UserInChat(umongo.Document):  # noqa
+    """
+    User in something chat.
+    """
+
     user = fields.ReferenceField(User)  # reference to main data about user
     chat = fields.ReferenceField(Chat)  # reference to current chat
     status = fields.IntegerField(
         default=1
     )  # status of user. will be converted to `db.structs.Status`
+
+    permissions = fields.DictField(
+        default={}
+    )  # a user permissions. not implemented now.
+    # TODO: impelement. reference to `db.structs.status`
 
     @staticmethod
     async def create_user(user: User, chat: Chat, status: int = 1):

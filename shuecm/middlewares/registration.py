@@ -6,11 +6,14 @@ import logging
 from vk.bot_framework import BaseMiddleware
 from vk.bot_framework import SkipHandler
 from vk.types.events.community.event import MessageNew
+from vk.types.responses.messages import GetConversationMembers
+from vk.types.responses.messages import GetConversationMembersResponseItem
 from vk.utils.get_event import get_event_object
 
 from db.models import Chat
 from db.models.user import User
 from db.models.user import UserInChat
+from db.structs import Status
 from shuecm.context import current_chat
 from shuecm.context import current_user
 from shuecm.context import current_user_in_chat
@@ -39,6 +42,10 @@ class UsersRegistrationMiddleware(BaseMiddleware):
                 user_in_chat: UserInChat = await UserInChat.get_user(
                     user=usr.pk, chat=data["current_chat"].pk
                 )
+                if not user_in_chat:
+                    user_in_chat: UserInChat = await UserInChat.create_user(
+                        usr, chat=data["current_chat"]
+                    )
                 data["current_user_in_chat"] = user_in_chat
                 current_user_in_chat.set(user_in_chat)
             return data
@@ -86,6 +93,26 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             return data
 
         chat: Chat = await Chat.create_chat(event.object.peer_id)
+        chat_members: GetConversationMembers.response.items = data[
+            "current_chat_members"
+        ]
+        member: GetConversationMembersResponseItem
+        for member in chat_members:
+            if member.member_id <= 0:
+                continue
+            usr = await User.get_user(member.member_id)
+            if not usr:
+                usr = await User.create_user(member.member_id)
+            if member.is_owner:
+                status = Status.OWNER.value
+            elif member.is_admin:
+                status = Status.ADMIN.value
+            else:
+                status = 1
+            user_in_chat = await UserInChat.create_user(
+                user=usr.pk, chat=chat.pk, status=status
+            )
+
         logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
         await event.object.answer(f"Данный чат успешно зарегистрирован!")
         data["current_chat"] = chat  # place the chat object to data

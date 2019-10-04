@@ -20,9 +20,14 @@ class BotAdminMiddleware(BaseMiddleware):
             return data
 
         try:
-            await VK.get_current().get_api().messages.get_conversation_members(
-                peer_id=event.object.peer_id
+            result = (
+                await VK.get_current()
+                .get_api()
+                .messages.get_conversation_members(peer_id=event.object.peer_id)
             )
+            data[
+                "current_chat_members"
+            ] = result.response.items  # place the chat members to data
             return data
         except APIException:
             await event.object.answer(

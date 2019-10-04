@@ -5,6 +5,8 @@ from vk import types
 from vk.bot_framework.dispatcher import Blueprint
 
 from db.models.user import User
+from db.models.user import UserInChat
+from db.structs import Status
 from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
@@ -17,10 +19,16 @@ bp = Blueprint()
 )
 @bp.message_handler(texts=["кто я", "я кто"])
 async def who_i_am_handler(message: types.Message, data: dict):
-    usr: User = data["current_user"]
-    await message.answer(
-        f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
-    )
+    if message.from_id == message.peer_id:
+        usr: User = data["current_user"]
+        await message.answer(
+            f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
+        )
+    else:
+        usr_in_chat: UserInChat = data["current_user_in_chat"]
+        usr: User = data["current_user"]
+        status = Status(usr_in_chat.status).name
+        await message.answer(f"ID: {usr.uid}. Статус: {status}")
 
 
 @bp.described_handler(
