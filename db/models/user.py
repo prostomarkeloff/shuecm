@@ -18,6 +18,11 @@ class User(umongo.Document):  # noqa
 
     uid = fields.IntegerField(required=True, unique=True)
     created_time = fields.IntegerField(default=time.time)
+    accounts = fields.ListField(
+        fields.ReferenceField("UserInChat"), default=[]
+    )  # accounts it is a list of
+
+    # chats (references to chats) where user exists.
 
     class Meta:
         collection = instance.db.users
@@ -43,14 +48,44 @@ class User(umongo.Document):  # noqa
         user = await User.find_one({"uid": uid})
         return user
 
+    @staticmethod
+    async def get_account(document_id: str):
+        """
+        Lookup user in user chats via document `_id`
+        :param document_id:
+        :return:
+        """
+        user = await User.find_one({"accounts": document_id})
+        return user
+
 
 @instance.register
 class UserInChat(umongo.Document):  # noqa
-
+    user = fields.ReferenceField(User)  # reference to main data about user
     chat = fields.ReferenceField(Chat)  # reference to current chat
     status = fields.IntegerField(
         default=1
     )  # status of user. will be converted to `db.structs.Status`
+
+    @staticmethod
+    async def create_user(user: User, chat: Chat, status: int = 1):
+        """
+        Create user in database
+        """
+        usr = UserInChat(user=user, chat=chat, status=status)
+        await usr.commit()
+        return usr
+
+    @staticmethod
+    async def get_user(chat: str, user: str):
+        """
+        Get user via chat '_id' and user '_id'
+        :param chat: _id of chat
+        :param user: _id of user
+        :return:
+        """
+        usr = await UserInChat.find_one({"chat": chat, "user": user})
+        return usr
 
     class Meta:
         collection = instance.db.users_in_chats

@@ -10,8 +10,10 @@ from vk.utils.get_event import get_event_object
 
 from db.models import Chat
 from db.models.user import User
+from db.models.user import UserInChat
 from shuecm.context import current_chat
 from shuecm.context import current_user
+from shuecm.context import current_user_in_chat
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +35,12 @@ class UsersRegistrationMiddleware(BaseMiddleware):
         if usr:
             data["current_user"] = usr  # place the user object to data
             current_user.set(usr)  # change context
+            if event.object.from_id != event.object.peer_id:
+                user_in_chat: UserInChat = await UserInChat.get_user(
+                    user=usr.pk, chat=data["current_chat"].pk
+                )
+                data["current_user_in_chat"] = user_in_chat
+                current_user_in_chat.set(user_in_chat)
             return data
 
         usr = await User.create_user(uid=event.object.from_id)
@@ -42,6 +50,16 @@ class UsersRegistrationMiddleware(BaseMiddleware):
         )
         data["current_user"] = usr  # place the user object to data
         current_user.set(usr)  # change context
+        if event.object.from_id != event.object.peer_id:
+            user_in_chat: UserInChat = await UserInChat.get_user(
+                user=usr.pk, chat=data["current_chat"].pk
+            )
+            if not user_in_chat:
+                user_in_chat: UserInChat = await UserInChat.create_user(
+                    usr, chat=data["current_chat"]
+                )
+                data["current_user_in_chat"] = user_in_chat
+                current_user_in_chat.set(user_in_chat)
         return data
 
     async def post_process_event(self) -> None:

@@ -8,6 +8,7 @@ from vk import VK
 
 from db.models.chat import Chat
 from db.models.user import User
+from db.models.user import UserInChat
 
 
 class Bot(BaseModel):
@@ -17,6 +18,7 @@ class Bot(BaseModel):
 
 current_user: ContextVar[User] = ContextVar("current_user")
 current_chat: ContextVar[Chat] = ContextVar("current_chat")
+current_user_in_chat: ContextVar[UserInChat] = ContextVar("current_user_in_chat")
 current_bot: ContextVar[Bot] = ContextVar("current_bot")  # for supporting user groups
 
 
