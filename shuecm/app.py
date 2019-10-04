@@ -59,9 +59,9 @@ async def run():
     pre_start_db(vk.loop)
 
     setup_sentry()
+    setup_rules()
     setup_blueprints()
     setup_middlewares()
-    setup_rules()
 
     dp.run_polling()
 

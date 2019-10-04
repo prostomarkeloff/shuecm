@@ -376,7 +376,7 @@ description = "sync/async MongoDB ODM, yes."
 name = "umongo"
 optional = false
 python-versions = "*"
-version = "2.1.0"
+version = "2.1.1"
 
 [package.dependencies]
 marshmallow = ">=2.18.0,<3.0.0"
@@ -437,10 +437,9 @@ pydantic = "*"
 watchgod = "*"
 
 [package.source]
-reference = "96e7c28ae92ae1619858249ef55097d6c5799286"
+reference = "e58d2c5cd52c7f39e307a31fb752e76de376c170"
 type = "git"
 url = "https://github.com/prostomarkeloff/vk.py"
-
 [[package]]
 category = "main"
 description = "Simple, modern file watching and code reload in python."
@@ -523,7 +522,7 @@ sentry-sdk = ["15e51e74b924180c98bcd636cb4634945b0a99a124d50b433c3a9dc6a582e8db"
 six = ["3350809f0555b11f552448330d0b52d5f24c91a322ea4a15ef22629740f3761c", "d16a0141ec1a18405cd4ce8b4613101da75da0e9a7aec5bdd4fa804d0e0eba73"]
 starlette = ["f600bf9d0beeeeebcb143e6d0c4f8858c2b05067d5a4feb446ba7400ba5e5dc5"]
 toml = ["229f81c57791a41d65e399fc06bf0848bab550a9dfd5ed66df18ce5f05e73d5c", "235682dd292d5899d361a811df37e04a8828a5b1da3115886b73cf81ebc9100e", "f1db651f9657708513243e61e6cc67d101a39bad662eaa9b5546f789338e07a3"]
-umongo = ["139491ed1c6de5589dbf0632bcdd4b020b87936b095b2985146170fc1fe6948d", "ff688369a3cb4abc00a116b832d3e7dc940e10cdc9215daa7265225fac8d7f1d"]
+umongo = ["5340c3232a3f7695efcdab67f3d593900bf2d4a90e2ce80cbf85208acd8e7541", "654ec104db3be90226b2cec747c0f9f90bf26a70ab64a5e72f0a830cd92d9ee4"]
 urllib3 = ["3de946ffbed6e6746608990594d08faac602528ac7015ac28d33cee6a45b7398", "9a107b99a5393caf59c7aa3c1249c16e6879447533d0887f4336dde834c7be86"]
 uvicorn = ["639cdeb92cdb0205494ca36be03d08e05d57249491751feb5fc74b023a0d18f3"]
 uvloop = ["0deb6c97c5807c792dd9024bab90e6ca49e981862103cb2ea37b430c1ca0a267", "155b34d513655e753d07f499a7e811970e2d397f240dfcbec0b32a9587159c99", "1df3ddfa280206e9999ae1c777a20836eb895bcec6dc9fae2cbb6eecfafb099e", "5b19361c8767e1dc61f6367f948d4f3dc5504b9f2eba488641b3d26ec14498ba", "942cd07035510b149d6160796f4e972137130ae953871b6a98c2cf5d5ab68c2e", "c63b6c0bf33144c604dd72f7eecf2d3a3ac7405c503c67bd98128cf306efe18a", "e698a20a3b4ccb380d207f9d491d4085d7c38d364f6a0bae98684a1612a9607a"]
