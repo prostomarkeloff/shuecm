@@ -4,7 +4,7 @@ Blueprint for informational commands.
 from vk import types
 from vk.bot_framework.dispatcher import Blueprint
 
-from shuecm.models.models.user import User
+from db.models.user import User
 
 bp = Blueprint()
 

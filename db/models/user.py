@@ -4,7 +4,7 @@ import typing
 import umongo
 from umongo import fields
 
-from shuecm.models.db import Instance
+from db.db import Instance
 
 instance: umongo.Instance = Instance.get_current().instance
 

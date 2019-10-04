@@ -7,8 +7,8 @@ from vk.bot_framework import BaseMiddleware
 from vk.types.events.community.event import MessageNew
 from vk.utils.get_event import get_event_object
 
-from shuecm.models.models.chat import Chat
-from shuecm.models.models.user import User
+from db.models import Chat
+from db.models.user import User
 
 logger = logging.getLogger(__name__)
 

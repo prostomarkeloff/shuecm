@@ -4,9 +4,9 @@ from vk import VK
 from vk.bot_framework import Dispatcher
 from vk.utils import TaskManager
 
+from db.prestart import pre_start as pre_start_db
 from shuecm.config import VK_GROUP_ID
 from shuecm.config import VK_TOKEN
-from shuecm.models.prestart import pre_start as pre_start_db
 
 logging.basicConfig(level="INFO")
 vk = VK(VK_TOKEN)
@@ -28,7 +28,7 @@ async def run():
     dp.setup_middleware(ChatsRegistrationMiddleware())
     dp.setup_middleware(UsersRegistrationMiddleware())
 
-    pre_start_db(vk.loop, drop_db=True)
+    pre_start_db(vk.loop)
     dp.run_polling()
 
 

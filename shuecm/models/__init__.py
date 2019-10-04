@@ -1,3 +1,0 @@
-"""
-Place db models here.
-"""
