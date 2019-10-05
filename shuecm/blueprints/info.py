@@ -28,14 +28,12 @@ async def test_handler(message: types.Message, data: dict):
 async def who_i_am_handler(message: types.Message, data: dict):
     if message.from_id == message.peer_id:
         usr: User = data["current_user"]
-        await message.answer(
-            f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
-        )
+        await message.answer(f"ID: {usr.uid}.")
     else:
         usr_in_chat: UserInChat = data["current_user_in_chat"]
         usr: User = data["current_user"]
         status = Status(usr_in_chat.status).name
-        await message.answer(f"ID: {usr.uid}. Статус: {status}")
+        await message.answer(f"ID: {usr.uid}. Статус: {status}.")
 
 
 @bp.described_handler(
@@ -55,12 +53,21 @@ async def who_i_am_handler(message: types.Message, data: dict):
 @bp.message_handler(texts=["кто ты", "ты кто"], have_args=(2, [valid_id_in_db]))
 @bp.message_handler(texts=["кто ты", "ты кто"], with_reply_message=True)
 async def who_are_you_handler(message: types.Message, data: dict):
+    # TODO: Абстрагировать получение юзера в отдельный враппер, тем самым
+    # упростить хендлеры.
     if message.reply_message:
         usr: User = await User.get_user(message.reply_message.from_id)
         if not usr:
-            await message.answer("Данный пользователь не зарегистрирован!")
+            return await message.answer("Данный пользователь не зарегистрирован!")
     else:
         usr: User = data["valid_id_in_db_user"]
-    await message.answer(
-        f"ID: {usr.uid}\n Дата регистрации: {usr.created_time} секунд с 01.01.1970"
-    )
+
+    if message.peer_id != message.from_id:
+        usr_in_chat: UserInChat = await UserInChat.get_user(
+            user=usr.pk, chat=data["current_chat"].pk
+        )
+        status = Status(usr_in_chat.status).name
+        await message.answer(f"ID: {usr.uid}. Статус: {status}.")
+
+    else:
+        await message.answer(f"ID: {usr.uid}.")
