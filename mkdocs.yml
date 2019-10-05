@@ -1,0 +1,12 @@
+site_name: ShueCM
+nav:
+  - Get started: index.md
+  - Upgrade: upgrade.md
+theme:
+  name: 'material'
+markdown_extensions:
+  - admonition
+  - codehilite
+
+repo_name: 'shueteam/shuecm'
+repo_url: 'https://github.com/shueteam/shuecm'
