@@ -16,6 +16,7 @@ dnspython = "^1.16"
 black = "19.3b0"
 sentry-sdk = "^0.12.3"
 db = {path = "../db/"}
+numpy = "^1.17"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

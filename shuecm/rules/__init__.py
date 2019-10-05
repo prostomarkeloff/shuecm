@@ -4,16 +4,27 @@ from vk import types
 from vk.bot_framework import NamedRule
 
 from db.structs.status import Permission
+from shuecm.utils import levenshtein
 
 
-class Texts(NamedRule):
-    key = "texts"
-    meta = {"name": "Texts", "description": "Check message text", "deprecated": False}
+class TextsWithArgs(NamedRule):
+    key = "texts_with_args"
+    prefix = ["", "!", "/", "."]  # support many prefixes
+    meta = {
+        "name": "TextsWithArgs",
+        "description": "Check message text (args supported)",
+        "deprecated": False,
+    }
 
     # texts with args.
 
     def __init__(self, texts: typing.List[str]):
         self.texts = [text.lower() for text in texts]
+        vars = []  # noqa
+        for text in self.texts:
+            for var in self.prefix:
+                vars.append(var + text)
+        self.texts = vars
 
     async def check(self, message: types.Message, data: dict):
         msg = message.text.lower()
@@ -29,6 +40,34 @@ class Texts(NamedRule):
             if res == splitted_text:
                 passed = True
                 break
+        return passed
+
+
+class Texts(NamedRule):
+    key = "texts"
+    prefix = ["", "!", "/", "."]  # support many prefixes
+    meta = {"name": "Texts", "description": "Check message text", "deprecated": False}
+
+    # texts with args.
+
+    def __init__(self, texts: typing.List[str]):
+        self.texts = [text.lower() for text in texts]
+        vars = []  # noqa
+        for text in self.texts:
+            for var in self.prefix:
+                vars.append(var + text)
+        self.texts = vars
+
+    async def check(self, message: types.Message, data: dict):
+        msg = message.text.lower()
+        passed = False
+        for text in self.texts:
+            ratio = levenshtein(text, msg)
+            print(ratio)
+            if ratio < 1.5:
+                passed = True
+                break
+
         return passed
 
 

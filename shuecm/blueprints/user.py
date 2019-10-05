@@ -47,8 +47,10 @@ async def who_i_am_handler(message: types.Message, data: dict):
         "кто ты durov",
     ],
 )
-@bp.message_handler(texts=["кто ты", "ты кто"], have_args=(2, [valid_id_in_db]))
-@bp.message_handler(texts=["кто ты", "ты кто"], with_reply_message=True)
+@bp.message_handler(
+    texts_with_args=["кто ты", "ты кто"], have_args=(2, [valid_id_in_db])
+)
+@bp.message_handler(texts_with_args=["кто ты", "ты кто"], with_reply_message=True)
 async def who_are_you_handler(message: types.Message, data: dict):
     if message.reply_message:
         usr: User = await User.get_user(message.reply_message.from_id)
