@@ -46,9 +46,11 @@ class TextsWithArgs(NamedRule):
 class Texts(NamedRule):
     key = "texts"
     prefix = ["", "!", "/", "."]  # support many prefixes
-    meta = {"name": "Texts", "description": "Check message text", "deprecated": False}
-
-    # texts with args.
+    meta = {
+        "name": "Texts",
+        "description": "Checking message text. Used levenshtein distance for solving wrong messages",
+        "deprecated": False,
+    }
 
     def __init__(self, texts: typing.List[str]):
         self.texts = [text.lower() for text in texts]

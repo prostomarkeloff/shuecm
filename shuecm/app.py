@@ -60,14 +60,30 @@ def setup_rules():
 
 
 async def run():
+    # check database before start
     pre_start_db(vk.loop)
 
+    # setup sentry error tracking
     setup_sentry()
+    # setup bot rules; blueprints doesn`t work without rules.
     setup_rules()
+    # setup blueprints (add commands to bot)
     setup_blueprints()
+    # setup middlewares for user authorization, etc.
     setup_middlewares()
 
-    dp.run_polling()
+    if not PRODUCTION:
+        # Polling used only for tests.
+        # Do not use it production, polling may skip any events (thanks to VK-API ;) )
+        dp.run_polling()
+    elif PRODUCTION:
+        # We use rabbitmq for event dispatching.
+        # You can run this code in many processes (via multiprocessing module)
+        # ... for more performance or run many instances of application.
+        from vk.bot_framework.extensions import RabbitMQ
+
+        dp.setup_extension(RabbitMQ)
+        dp.run_extension("rabbitmq", vk=vk, queue_name="TODO: CHANGE THIS.")
 
 
 if __name__ == "__main__":

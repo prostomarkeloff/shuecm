@@ -10,6 +10,11 @@ markdown_extensions:
   - codehilite
   - pymdownx.tasklist:
       custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:pymdownx.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
 
 repo_name: 'shueteam/shuecm'
 repo_url: 'https://github.com/shueteam/shuecm'
