@@ -28,6 +28,12 @@ class UsersRegistrationMiddleware(BaseMiddleware):
     Register users in database if event == "message_new".
     """
 
+    meta = {
+        "name": "UsersRegistrationMiddleware",
+        "description": "Register users in chats",
+        "deprecated": False,
+    }
+
     async def pre_process_event(self, event: dict, data: dict) -> dict:
         if event["type"] != "message_new":
             return data
@@ -82,6 +88,12 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
     Register chats in database if event == "message_new".
     """
 
+    meta = {
+        "name": "ChatsRegistrationMiddleware",
+        "description": "Register chats in database",
+        "deprecated": False,
+    }
+
     async def pre_process_event(self, event: dict, data: dict) -> dict:
         if event["type"] != "message_new":
             return data
@@ -96,10 +108,13 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             current_chat.set(chat)  # change context
             return data
 
+        # register chat
         chat: Chat = await Chat.create_chat(event.object.peer_id)
         chat_members: GetConversationMembers.response.items = data[
             "current_chat_members"
         ]
+        # register chat members
+        # TODO: rewrite with new permission system @yilbegan
         member: GetConversationMembersResponseItem
         for member in chat_members:
             if member.member_id <= 0:
