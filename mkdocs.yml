@@ -2,7 +2,7 @@ site_name: ShueCM
 nav:
   - Get started: index.md
   - Upgrade: upgrade.md
-  - Speed: speed.md
+  - Performance: performance.md
 theme:
   name: 'material'
 markdown_extensions:
