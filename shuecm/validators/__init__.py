@@ -1,6 +1,8 @@
 """
 Validators for message args.
 """
+import typing
+
 from vk import types
 from vk import VK
 from vk.exceptions import APIException
@@ -10,7 +12,9 @@ from db.models.user import User
 vk = VK.get_current()
 
 
-async def valid_id_in_db(arg: str, message: types.Message):
+async def valid_id_in_db(
+    arg: str, message: types.Message
+) -> typing.Union[bool, typing.Dict[str, User]]:
     """
     Check user in database via uid or screenname.
     :param arg:

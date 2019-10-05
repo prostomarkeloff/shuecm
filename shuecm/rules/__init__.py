@@ -7,9 +7,35 @@ from db.structs.status import Permission
 from shuecm.utils import levenshtein
 
 
-class TextsWithArgs(NamedRule):
-    key = "texts_with_args"
+class Texts:
+    key = "texts"
     prefix = ["", "!", "/", "."]  # support many prefixes
+    meta = {
+        "name": "Texts",
+        "description": "Checking message text. Using levenshtein distance for solving wrong messages",
+        "deprecated": False,
+    }
+
+    def __init__(self, texts: typing.List[str]):  # noqa
+        self.texts: typing.List[str] = []
+        for text in texts:
+            for prefix in self.prefix:
+                self.texts.append(prefix + text.lower())
+
+    async def check(self, message: types.Message, data: dict) -> bool:
+        msg: str = message.text.lower()
+        passed: bool = False
+        for text in self.texts:
+            ratio: float = levenshtein(text, msg)
+            if ratio < 1.5:
+                passed = True
+                break
+
+        return passed
+
+
+class TextsWithArgs(Texts):  # for supporting many prefixes
+    key = "texts_with_args"
     meta = {
         "name": "TextsWithArgs",
         "description": "Checks message text with arguments",
@@ -17,39 +43,6 @@ class TextsWithArgs(NamedRule):
     }
 
     # texts with args.
-
-    def __init__(self, texts: typing.List[str]):
-        self.texts = [text.lower() for text in texts]
-        vars = []  # noqa
-        for text in self.texts:
-            for var in self.prefix:
-                vars.append(var + text)
-        self.texts = vars
-
-    async def check(self, message: types.Message, data: dict):
-        msg = message.text.lower()
-        splitted = msg.split()
-        passed = False
-        for text in self.texts:
-            splitted_text = text.split()
-            texts_lenght = len(splitted_text)
-            msg_lenght = len(splitted)
-            if msg_lenght < texts_lenght:
-                continue
-            res = splitted[0:texts_lenght]
-            if res == splitted_text:
-                passed = True
-                break
-        return passed
-
-
-class Texts(TextsWithArgs):  # for prefixes
-    key = "texts"
-    meta = {
-        "name": "Texts",
-        "description": "Checking message text. Using levenshtein distance for solving wrong messages",
-        "deprecated": False,
-    }
 
     def __init__(self, texts: typing.List[str]):  # noqa
         self.texts = [text.lower() for text in texts]
@@ -59,15 +52,20 @@ class Texts(TextsWithArgs):  # for prefixes
                 vars.append(var + text)
         self.texts = vars
 
-    async def check(self, message: types.Message, data: dict):
-        msg = message.text.lower()
-        passed = False
+    async def check(self, message: types.Message, data: dict) -> bool:
+        msg: str = message.text.lower()
+        splitted: typing.List[str] = msg.split()
+        passed: bool = False
         for text in self.texts:
-            ratio = levenshtein(text, msg)
-            if ratio < 1.5:
+            splitted_text: typing.List[str] = text.split()
+            texts_length: int = len(splitted_text)
+            msg_length: int = len(splitted)
+            if msg_length < texts_length:
+                continue
+            res: typing.List[str] = splitted[0:texts_length]
+            if res == splitted_text:
                 passed = True
                 break
-
         return passed
 
 
@@ -89,8 +87,8 @@ class UserHavePermission(NamedRule):
             else:
                 self.permissions.append(perm)
 
-    async def check(self, message: types.Message, data: dict):
-        current_user_permissions = data[
+    async def check(self, message: types.Message, data: dict) -> bool:
+        current_user_permissions: dict = data[
             "current_user_in_chat"
         ].dump()  # used only in chats
         passed: bool = True
