@@ -2,21 +2,28 @@
 Blueprint for informational commands.
 """
 from vk import types
+from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
+from vk.bot_framework.storages import TTLDictStorage
 
 from db.models.user import User
 from db.models.user import UserInChat
 from db.structs import Status
-from db.structs.status import Permission
 from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
+cache = TTLDictStorage()
 
 
-@bp.message_handler(text="привет", with_permissions=[Permission.CAN_KICK])
-async def test_handler(message: types.Message, data: dict):
-    # сделано исключительно для тестирования.
-    await message.answer("Привет!")
+# TODO: Вынести хендлеры (кто я, кто ты) в отдельный blueprint.
+
+
+@bp.message_handler(texts=["помощь", "инфа", "help"])
+@cached_handler(storage=cache, expire=30, for_specify_user=False)
+async def handler(message: types.Message, data: dict):
+    users_count: int = await User.count_documents()
+    answer = f"Привет! Я чат-менеджер @shuecm. \n\n\nСейчас зарегистрировано: {users_count} пользователя(ей)!"
+    return await message.cached_answer(answer)
 
 
 @bp.described_handler(
