@@ -17,7 +17,7 @@ async def valid_id_in_db(arg: str, message: types.Message):
     :param message:
     :return:
     """
-    bad_answer = "Неверный ID пользователя!"
+    bad_answer = "Неверный ID пользователя или пользователь не зарегистрирован!"
 
     if not arg.isdigit():
         arg: str = arg.strip("[]").split("|")[0]

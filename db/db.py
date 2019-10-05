@@ -4,8 +4,8 @@ import umongo
 from motor.motor_asyncio import AsyncIOMotorClient
 from vk.utils import ContextInstanceMixin
 
-from shuecm.config import MONGODB_CONNECTION_URI
-from shuecm.config import MONGODB_DATABASE_NAME
+from db.config import MONGODB_CONNECTION_URI
+from db.config import MONGODB_DATABASE_NAME
 
 
 class DB(ContextInstanceMixin):
