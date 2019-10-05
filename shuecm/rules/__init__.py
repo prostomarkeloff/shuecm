@@ -12,7 +12,7 @@ class TextsWithArgs(NamedRule):
     prefix = ["", "!", "/", "."]  # support many prefixes
     meta = {
         "name": "TextsWithArgs",
-        "description": "Check message text (args supported)",
+        "description": "Checks message text with arguments",
         "deprecated": False,
     }
 
@@ -43,16 +43,15 @@ class TextsWithArgs(NamedRule):
         return passed
 
 
-class Texts(NamedRule):
+class Texts(TextsWithArgs):  # for prefixes
     key = "texts"
-    prefix = ["", "!", "/", "."]  # support many prefixes
     meta = {
         "name": "Texts",
-        "description": "Checking message text. Used levenshtein distance for solving wrong messages",
+        "description": "Checking message text. Using levenshtein distance for solving wrong messages",
         "deprecated": False,
     }
 
-    def __init__(self, texts: typing.List[str]):
+    def __init__(self, texts: typing.List[str]):  # noqa
         self.texts = [text.lower() for text in texts]
         vars = []  # noqa
         for text in self.texts:
@@ -74,6 +73,13 @@ class Texts(NamedRule):
 
 class UserHavePermission(NamedRule):
     key = "with_permissions"
+    meta = {
+        "name": "UserHavePermission",
+        "description": "Check user permissions",
+        "deprecated": False,
+    }
+
+    # TODO: rewrite with new permissions system
 
     def __init__(self, permissions: typing.List[str]):
         self.permissions: typing.List[str] = []
