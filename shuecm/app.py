@@ -19,6 +19,12 @@ dp = Dispatcher(vk, VK_GROUP_ID)
 
 
 def setup_sentry():
+    """
+    Setup sentry in application.
+
+    # TODO: move to utils.py.
+    :return:
+    """
     if PRODUCTION and SENTRY_DSN:
         import sentry_sdk
 
@@ -31,10 +37,15 @@ def setup_sentry():
 
 
 def setup_blueprints():
+    """
+    Register blueprints in applcation.
+    :return:
+    """
     from shuecm.blueprints import info_bp, user_bp
 
     dp.setup_blueprint(info_bp)
     logger.info("Informational blueprint succesfully initialized!")
+
     dp.setup_blueprint(user_bp)
     logger.info("User blueprint succesfully initialized!")
 
@@ -56,6 +67,10 @@ def setup_middlewares():
 
 
 def setup_rules():
+    """
+    Register rules for blueprints
+    :return:
+    """
     from shuecm.rules import Texts, UserHavePermission, TextsWithArgs
 
     dp.setup_rule(UserHavePermission)
@@ -79,6 +94,7 @@ async def run():
     if not PRODUCTION:
         # Polling used only for tests.
         # Do not use it production, polling may skip any events (thanks to VK-API ;) )
+        # Also polling not scalable, really.
         dp.run_polling()
     elif PRODUCTION:
         # We use rabbitmq for event dispatching.
@@ -91,6 +107,7 @@ async def run():
 
 
 if __name__ == "__main__":
+    # Wrapper over asyncio
     manager = TaskManager(vk.loop)
     manager.add_task(run)
     manager.run()
