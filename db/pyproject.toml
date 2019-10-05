@@ -2,13 +2,16 @@
 name = "db"
 version = "0.1.0"
 description = "Database interaction"
-authors = ["Shue Team"]
+authors = ["Shue Developers"]
 license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
 umongo = "^2.1"
+dnspython = "^1.16"
 "vk.py" = {git = "https://github.com/prostomarkeloff/vk.py"}
+motor = "^2.0"
+environs = "^6.0"
 
 [tool.poetry.dev-dependencies]
 

@@ -2,21 +2,17 @@
 name = "shuecm"
 version = "0.1.0"
 description = "A next generation VK chat manager."
-authors = ["shueteam"]
+authors = ["Shue Developers"]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.7"
 pytest = "^3.0"
 "vk.py" = {git = "https://github.com/prostomarkeloff/vk.py"}
 environs = "^6.0"
-pre-commit = "^1.18"
-umongo = "^2.1"
-motor = "^2.0"
-dnspython = "^1.16"
-black = "19.3b0"
 sentry-sdk = "^0.12.3"
 db = {path = "../db/"}
-numpy = "^1.17"
+numpy = "^1.17"  # for commands resolving, etc.
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
