@@ -1,7 +1,17 @@
+import typing
+
 import numpy as np
 
 
-def levenshtein(seq1, seq2):
+def levenshtein(seq1: typing.Sequence[str], seq2: typing.Sequence[str]) -> float:
+    """
+    Levenshtein distance for text(s) rule.
+
+    Author: https://stackabuse.com/levenshtein-distance-and-text-similarity-in-python/
+    :param seq1:
+    :param seq2:
+    :return: if it's similarly - returns 1.0, else - more than 1.0 ;)
+    """
     size_x = len(seq1) + 1
     size_y = len(seq2) + 1
     matrix = np.zeros((size_x, size_y))
