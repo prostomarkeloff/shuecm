@@ -6,7 +6,7 @@
 <a href="https://vk.com/shuecm"><img src="https://img.shields.io/badge/chat-manager-%234a76a8.svg?logo=VK&logoColor=white"></a>
 <img src="https://img.shields.io/badge/%D0%A8%D0%A3%D0%95-%D0%9F%D0%9F%D0%A8-red">
 </p>
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 #### Чат-менеджер нового поколения для [Вконтакте](https://vk.com/)
 
