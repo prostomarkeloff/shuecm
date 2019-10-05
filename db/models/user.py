@@ -85,17 +85,16 @@ class UserInChat(umongo.Document):  # noqa
         default=1
     )  # status of user. will be converted to `db.structs.Status`
 
-    permissions = fields.DictField(
-        default={}
-    )  # a user permissions. not implemented now.
-    # TODO: impelement. reference to `db.structs.status`
+    permissions = fields.DictField(default={})  # a user permissions.
 
     @staticmethod
-    async def create_user(user: User, chat: Chat, status: int = 1):
+    async def create_user(user: User, chat: Chat, status: int = 1, permissions=None):
         """
         Create user in database
         """
-        usr = UserInChat(user=user, chat=chat, status=status)
+        if permissions is None:
+            permissions = {}
+        usr = UserInChat(user=user, chat=chat, status=status, permissions=permissions)
         await usr.commit()
         return usr
 

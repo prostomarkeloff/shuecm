@@ -50,8 +50,9 @@ def setup_middlewares():
 
 
 def setup_rules():
-    from shuecm.rules import Texts
+    from shuecm.rules import Texts, UserHavePermission
 
+    dp.setup_rule(UserHavePermission)
     dp.setup_rule(Texts)
 
 

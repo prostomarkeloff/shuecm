@@ -7,13 +7,15 @@ from vk.bot_framework.dispatcher import Blueprint
 from db.models.user import User
 from db.models.user import UserInChat
 from db.structs import Status
+from db.structs.status import Permission
 from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
 
 
-@bp.message_handler(text="!помощь")
+@bp.message_handler(text="привет", with_permissions=[Permission.CAN_KICK])
 async def test_handler(message: types.Message, data: dict):
+    # сделано исключительно для тестирования.
     await message.answer("Привет!")
 
 
