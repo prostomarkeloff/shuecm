@@ -31,10 +31,12 @@ def setup_sentry():
 
 
 def setup_blueprints():
-    from shuecm.blueprints import info_bp
+    from shuecm.blueprints import info_bp, user_bp
 
     dp.setup_blueprint(info_bp)
     logger.info("Informational blueprint succesfully initialized!")
+    dp.setup_blueprint(user_bp)
+    logger.info("User blueprint succesfully initialized!")
 
 
 def setup_middlewares():
