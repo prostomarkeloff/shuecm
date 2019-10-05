@@ -63,7 +63,6 @@ class Texts(NamedRule):
         passed = False
         for text in self.texts:
             ratio = levenshtein(text, msg)
-            print(ratio)
             if ratio < 1.5:
                 passed = True
                 break
