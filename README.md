@@ -14,7 +14,7 @@
 
 ### О проекте
 
-Данный проект призван составить конкуренцию современным крупным чат-менеджерам, при этом, оставляя, весь код открытым и развивающимся за счёт заинтересованного сообщества. Одна из главных целей - **скорость**, поэтому ЧМ основан на самой 
+Данный проект призван составить конкуренцию современным крупным чат-менеджерам, при этом, оставляя, весь код открытым и развивающимся за счёт заинтересованного сообщества. Одна из главных целей - **скорость**, поэтому ЧМ основан на самой
 быстрой из существующих библиотек для взаимодействия с API Вконтакте - [vk.py](https://github.com/prostomarkeloff/vk.py), а в качестве базы данных используется [MongoDB](https://github.com/Scille/umongo).
 
 
@@ -38,12 +38,22 @@
 ```sh
 git clone https://github.com/shueteam/shuecm
 cd shuecm
+python3 -m virtualenv venv
 pip install poetry
+cd shuecm
 poetry install
-pre-commit install
+cd ..
+mv .bot.env.example .bot.env
+mv .database.env.example .database.env
+mv .general.env.example .general.env
+nano .bot.env # edit config
+nano .database.env # edit config №2
+sudo chmod +x scripts/local-run
+./local-run
+# Enjoy!
 ```
 Скоро и для Docker!
 
 ### Вклад в развитие
 
-Проект нуждается в вашей помощи, любые вопросы получат ответ, а предложения будут приняты к сведению. 
+Проект нуждается в вашей помощи, любые вопросы получат ответ, а предложения будут приняты к сведению.

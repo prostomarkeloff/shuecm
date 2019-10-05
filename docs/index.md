@@ -16,40 +16,27 @@ ShueCM - Быстрый, дополняемый и расширяемый чат
 * [ ] Система кастомных ролей
 * [ ] Популярнее остальных ЧМ
 
-### Деплой
+### Использование
 
-Склонируйте репозиторий
-```sh
-git clone https://github.com/shueteam/shuecm
-cd shuecm
-```
 
 Установите зависимости
 ```sh
+git clone https://github.com/shueteam/shuecm
+cd shuecm
+python3 -m virtualenv venv
 pip install poetry
+cd shuecm
 poetry install
-pre-commit install
+cd ..
+mv .bot.env.example .bot.env
+mv .database.env.example .database.env
+mv .general.env.example .general.env
+nano .bot.env # edit config
+nano .database.env # edit config №2
+sudo chmod +x scripts/local-run
 ```
-Создайте текстовый файл .env и поместите в него значения, указанные
-в .env.example
-```sh
-VK_TOKEN="123"
-VK_GROUP_ID="123"
 
-# mongodb settings
-MONGODB_CONNECTION_URI="123"
-MONGODB_DATABASE_NAME="test"
-
-# Sentry settings
-SENTRY_DSN=""
-
-# logging settings
-LOGGING_LEVEL="INFO"
-
-# global settings
-PRODUCTION=false
-```
 Запустите чат-менеджера
 ```sh
-python3 shuecm/app.py
+./local-run
 ```

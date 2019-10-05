@@ -22,7 +22,8 @@ import datetime
 
 bp = Blueprint()
 
-
+# texts - НЕ встроенное правило библиотеки vk.py, оно
+# находится в shuecm/rules/__init__.py
 @bp.message_handler(texts=["время", "сколько времени"])
 async def time_handler(message: types.Message, data: dict):
         await message.answer(f"Текущее время: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')}")
