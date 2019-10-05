@@ -7,6 +7,8 @@ theme:
 markdown_extensions:
   - admonition
   - codehilite
+  - pymdownx.tasklist:
+      custom_checkbox: true
 
 repo_name: 'shueteam/shuecm'
 repo_url: 'https://github.com/shueteam/shuecm'
