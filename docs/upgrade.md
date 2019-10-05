@@ -1,12 +1,12 @@
 # Расширение чат-менеджера
 
-Данный чат-менеджер имеет в удобном расширении и изменении его
+Данный чат-менеджер имеет преимущество в удобстве расширения и изменения его
 функционала. Для расширения вам понадобится [библиотека](https://github.com/prostomarkeloff/vk.py), на которой основан данный
 ЧМ и документация к ней.
 
 Все команды содержатся в blueprints/ и подключаются в файле app.py
 
-```python
+```python3
 def setup_blueprints():
     from shuecm.blueprints import your_blueprint
 
@@ -15,7 +15,7 @@ def setup_blueprints():
 
 #### Пример добавления команды
 
-```python
+```python3
 from vk import types
 from vk.bot_framework.dispatcher import Blueprint
 import datetime
