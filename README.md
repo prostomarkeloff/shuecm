@@ -39,6 +39,7 @@
 git clone https://github.com/shueteam/shuecm
 cd shuecm
 python3 -m virtualenv venv
+source venv/bin/activate
 pip install poetry
 cd shuecm
 poetry install
