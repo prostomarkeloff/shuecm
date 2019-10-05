@@ -5,12 +5,23 @@ from vk.bot_framework import BaseMiddleware
 from vk.bot_framework import SkipHandler
 from vk.exceptions import APIException
 from vk.types.events.community.event import MessageNew
+from vk.types.responses.messages import GetConversationMembers
 from vk.utils.get_event import get_event_object
 
 logger = logging.getLogger(__name__)
 
 
 class BotAdminMiddleware(BaseMiddleware):
+    meta = {
+        "name": "BotAdminMiddleware",
+        "description": "Checks if bot is admin",
+        "deprecated": False,
+    }
+
+    def __init__(self):
+        super().__init__()
+        self.api = VK.get_current(no_error=False).get_api()
+
     async def pre_process_event(self, event: dict, data: dict) -> dict:
         if event["type"] != "message_new":
             return data
@@ -20,10 +31,8 @@ class BotAdminMiddleware(BaseMiddleware):
             return data
 
         try:
-            result = (
-                await VK.get_current()
-                .get_api()
-                .messages.get_conversation_members(peer_id=event.object.peer_id)
+            result: GetConversationMembers = (
+                self.api.messages.get_conversation_members(peer_id=event.object.peer_id)
             )
             data[
                 "current_chat_members"

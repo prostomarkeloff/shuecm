@@ -40,6 +40,10 @@ def setup_blueprints():
 
 
 def setup_middlewares():
+    """
+    Register middlewares in applcation.
+    :return:
+    """
     from shuecm.middlewares import (
         UsersRegistrationMiddleware,
         BotAdminMiddleware,
