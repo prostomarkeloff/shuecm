@@ -4,6 +4,7 @@ import typing
 import umongo
 from umongo import fields
 
+from ..structs.status import DEFAULT_ROLES
 from .chat import Chat
 from db.db import Instance
 
@@ -39,3 +40,14 @@ class Role(umongo.Document):
         role = Role(chat=chat, name=name, permissions=permissions)
         await role.commit()
         return role
+
+    @staticmethod
+    async def register_default_roles(chat: Chat):
+        roles = {}
+        for role in DEFAULT_ROLES:
+            role = Role(
+                chat=chat, name=role.NAME.value, permissions=role.PERMISSIONS.value
+            )
+            role.commit()
+            roles[role] = role
+        return roles

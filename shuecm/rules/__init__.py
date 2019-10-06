@@ -88,18 +88,17 @@ class UserHavePermission(NamedRule):
         self.permissions: typing.List[str] = []
         for perm in permissions:
             if isinstance(perm, Permission):
-                self.permissions.append(perm.name)
+                self.permissions.append(perm.value)
             else:
                 self.permissions.append(perm)
 
     async def check(self, message: types.Message, data: dict) -> bool:
-        current_user_permissions: dict = data[
+        current_user_permissions: dict = await data[
             "current_user_in_chat"
-        ].dump()  # used only in chats
+        ].permissions  # used only in chats
         passed: bool = True
         for permission in self.permissions:
-            res = permission in current_user_permissions["permissions"]
-            if not res:
+            if not current_user_permissions.get(permission, False):
                 passed = False
                 break
         return passed

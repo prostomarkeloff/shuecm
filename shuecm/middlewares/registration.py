@@ -11,11 +11,11 @@ from vk.types.responses.messages import GetConversationMembersResponseItem
 from vk.utils.get_event import get_event_object
 
 from db.models import Chat
+from db.models.role import Role
 from db.models.user import User
 from db.models.user import UserInChat
-from db.structs import Status
-from db.structs.status import ADMIN_PERMISSIONS
-from db.structs.status import OWNER_PERMISSIONS
+from db.structs.status import Admin
+from db.structs.status import Owner
 from shuecm.context import current_chat
 from shuecm.context import current_user
 from shuecm.context import current_user_in_chat
@@ -117,7 +117,7 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             "current_chat_members"
         ]
         # register chat members
-        # TODO: rewrite with new permission system @yilbegan
+        roles: dict = await Role.register_default_roles(chat)
         member: GetConversationMembersResponseItem
         for member in chat_members:
             if member.member_id <= 0:
@@ -126,16 +126,13 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             if not usr:
                 usr = await User.create_user(member.member_id)
             if member.is_owner:
-                status = Status.OWNER.value
-                permissions = OWNER_PERMISSIONS
+                role = roles[Owner]
             elif member.is_admin:
-                status = Status.ADMIN.value
-                permissions = ADMIN_PERMISSIONS
+                role = roles[Admin]
             else:
-                status = 1
-                permissions = {}
+                role = None
             user_in_chat = await UserInChat.create_user(
-                user=usr.pk, chat=chat.pk, status=status, permissions=permissions
+                user=usr.pk, chat=chat.pk, roles_=role
             )
             await User.add_account(usr, user_in_chat.pk)  # add new account
 
