@@ -3,6 +3,7 @@ nav:
   - Get started: index.md
   - Upgrade: upgrade.md
   - Performance: performance.md
+  - Roles: roles.md
 theme:
   name: 'material'
 markdown_extensions:
