@@ -165,7 +165,6 @@ watchgod = "*"
 reference = "6efff0c6a118f9b17dbf393f70fd91a8b5fd76e6"
 type = "git"
 url = "https://github.com/prostomarkeloff/vk.py"
-
 [[package]]
 category = "main"
 description = "Simple, modern file watching and code reload in python."
@@ -187,7 +186,7 @@ idna = ">=2.0"
 multidict = ">=4.0"
 
 [metadata]
-content-hash = "aa11e38ca1226c45d2083ceba03f5ac9949d97601701d98a75f08262b2e7a32a"
+content-hash = "04d4fe981cc86ecb4c5b3bba175920c101c383853024085290d1a3aefddad349"
 python-versions = "^3.7"
 
 [metadata.hashes]

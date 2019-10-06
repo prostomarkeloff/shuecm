@@ -4,8 +4,11 @@ import typing
 import umongo
 from umongo import fields
 
+from ..db import Instance
+from ..structs.status import DEFAULT_PERMISSIONS
 from .chat import Chat
-from db.db import Instance
+from .role import Role
+
 
 instance: umongo.Instance = Instance.get_current().instance
 
@@ -67,34 +70,32 @@ class User(umongo.Document):  # noqa
         :return:
         """
         current: dict = usr.dump()
-        accs: list = current["accounts"]
-        accs.append(document_id)
-        usr.update({"accounts": accs})
+        accounts: list = current["accounts"]
+        accounts.append(document_id)
+        usr.update({"accounts": accounts})
         return await usr.commit()
 
 
 @instance.register
 class UserInChat(umongo.Document):  # noqa
     """
-    User in something chat.
+    User in some chat.
     """
 
     user: User = fields.ReferenceField(User)  # reference to main data about user
     chat: Chat = fields.ReferenceField(Chat)  # reference to current chat
-    status = fields.IntegerField(
-        default=1
-    )  # status of user. will be converted to `db.structs.Status`
-
-    permissions = fields.DictField(default={})  # a user permissions.
+    roles = fields.ListField(fields.ObjectIdField, default=[])
 
     @staticmethod
-    async def create_user(user: User, chat: Chat, status: int = 1, permissions=None):
+    async def create_user(user: User, chat: Chat, roles_: typing.List[Role] = None):
         """
         Create user in database
         """
-        if permissions is None:
-            permissions = {}
-        usr = UserInChat(user=user, chat=chat, status=status, permissions=permissions)
+        if roles_ is None:
+            roles = []
+        else:
+            roles = [role.id for role in roles_]
+        usr = UserInChat(user=user, chat=chat, roles=roles)
         await usr.commit()
         return usr
 
@@ -108,6 +109,25 @@ class UserInChat(umongo.Document):  # noqa
         """
         usr = await UserInChat.find_one({"chat": chat, "user": user})
         return usr
+
+    @property
+    async def permissions(self):
+        """
+        Get user permissions
+        :return:
+        """
+        roles = instance.db.role.aggregate(
+            [
+                {"$match": {"_id": {"$in": self.roles}}},
+                {"$addFields": {"_order": {"$indexOfArray": [self.roles, "$_id"]}}},
+                {"$sort": {"_order": 1}},
+            ]
+        )
+
+        permissions = DEFAULT_PERMISSIONS.copy()
+        async for role in roles:
+            permissions.update(role["permissions"])
+        return permissions
 
     class Meta:
         collection = instance.db.users_in_chats
