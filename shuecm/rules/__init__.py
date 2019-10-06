@@ -16,6 +16,8 @@ class Texts(NamedRule):
         "deprecated": False,
     }
 
+    __slots__ = ("texts",)
+
     def __init__(self, texts: typing.List[str]):  # noqa
         self.texts: typing.List[str] = []
         for text in texts:
@@ -41,6 +43,8 @@ class TextsWithArgs(Texts):
         "description": "Checks message text with arguments",
         "deprecated": False,
     }
+
+    __slots__ = ("texts",)
 
     # texts with args.
 
@@ -77,6 +81,7 @@ class UserHavePermission(NamedRule):
         "deprecated": False,
     }
 
+    __slots__ = ("permissions",)
     # TODO: rewrite with new permissions system
 
     def __init__(self, permissions: typing.List[str]):

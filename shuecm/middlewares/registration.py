@@ -34,6 +34,8 @@ class UsersRegistrationMiddleware(BaseMiddleware):
         "deprecated": False,
     }
 
+    __slots__ = ()
+
     async def pre_process_event(self, event: dict, data: dict) -> dict:
         if event["type"] != "message_new":
             return data
@@ -93,6 +95,7 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
         "description": "Register chats in database",
         "deprecated": False,
     }
+    __slots__ = ()
 
     async def pre_process_event(self, event: dict, data: dict) -> dict:
         if event["type"] != "message_new":
