@@ -44,10 +44,10 @@ class Role(umongo.Document):
     @staticmethod
     async def register_default_roles(chat: Chat):
         roles = {}
-        for role in DEFAULT_ROLES:
+        for role_ in DEFAULT_ROLES:
             role = Role(
-                chat=chat, name=role.NAME.value, permissions=role.PERMISSIONS.value
+                chat=chat, name=role_.NAME.value, permissions=role_.PERMISSIONS.value
             )
-            role.commit()
-            roles[role] = role
+            await role.commit()
+            roles[role_] = role
         return roles
