@@ -7,7 +7,7 @@ from db.structs.status import Permission
 from shuecm.utils import levenshtein
 
 
-class Texts:
+class Texts(NamedRule):
     key = "texts"
     prefix = ["", "!", "/", "."]  # support many prefixes
     meta = {
@@ -34,7 +34,7 @@ class Texts:
         return passed
 
 
-class TextsWithArgs(Texts):  # for supporting many prefixes
+class TextsWithArgs(Texts):
     key = "texts_with_args"
     meta = {
         "name": "TextsWithArgs",

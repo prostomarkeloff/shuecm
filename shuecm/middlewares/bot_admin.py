@@ -17,6 +17,7 @@ class BotAdminMiddleware(BaseMiddleware):
         "description": "Checks if bot is admin",
         "deprecated": False,
     }
+    __slots__ = ("api",)
 
     def __init__(self):
         super().__init__()
@@ -32,7 +33,9 @@ class BotAdminMiddleware(BaseMiddleware):
 
         try:
             result: GetConversationMembers = (
-                self.api.messages.get_conversation_members(peer_id=event.object.peer_id)
+                await self.api.messages.get_conversation_members(
+                    peer_id=event.object.peer_id
+                )
             )
             data[
                 "current_chat_members"
