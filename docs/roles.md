@@ -39,7 +39,7 @@ from db.structs.status import Permission
 await Role.create_role(
         chat=chat,  # информация о чате, полученная из бд
         name="JuniorModerator",  # название роли
-        permissions={Permission.CAN_WARN.value: True},  # возможность выдавать варны
+        permissions={Permission.CAN_KICK.value: True},  # возможность выдавать варны
     )
 ```
 Полномочие ```CAN_WRITE``` в словарь permissions указывать необязательно, оно выдается
