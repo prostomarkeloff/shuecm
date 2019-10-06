@@ -12,10 +12,16 @@ pytest = "^3.0"
 environs = "^6.0"
 sentry-sdk = "^0.12.3"
 db = {path = "../db/"}
+umongo = "^2.1"
+dnspython = "^1.16"
 numpy = "^1.17"  # for commands resolving, etc.
 aio_pika = "^6.1"
+motor = "^2.0"
 
 
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^1.18"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
