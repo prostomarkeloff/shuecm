@@ -11,3 +11,5 @@ from db.models.user import UserInChat
 current_user: ContextVar[User] = ContextVar("current_user")
 current_chat: ContextVar[Chat] = ContextVar("current_chat")
 current_user_in_chat: ContextVar[UserInChat] = ContextVar("current_user_in_chat")
+
+__all__ = ["current_user", "current_chat", "current_user_in_chat"]

@@ -68,3 +68,6 @@ async def who_are_you_handler(message: types.Message, data: dict):
 
     else:
         await message.answer(f"ID: {usr.uid}.")
+
+
+__all__ = ["bp"]

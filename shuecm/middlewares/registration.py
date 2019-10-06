@@ -144,3 +144,6 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
 
     async def post_process_event(self) -> None:
         pass
+
+
+__all__ = ["UsersRegistrationMiddleware", "ChatsRegistrationMiddleware"]

@@ -37,3 +37,6 @@ async def valid_id_in_db(
         return False
 
     return {"valid_id_in_db_user": usr}
+
+
+__all__ = ["valid_id_in_db"]

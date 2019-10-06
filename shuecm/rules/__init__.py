@@ -98,3 +98,6 @@ class UserHavePermission(NamedRule):
                 passed = False
                 break
         return passed
+
+
+__all__ = ["Texts", "TextsWithArgs", "UserHavePermission"]

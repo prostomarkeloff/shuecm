@@ -12,3 +12,5 @@ env_general.read_env(".general.env", recurse=False)
 
 SENTRY_DSN: str = env_general("SENTRY_DSN")
 PRODUCTION: bool = env_general.bool("PRODUCTION")
+
+__all__ = ["VK_TOKEN", "VK_GROUP_ID", "SENTRY_DSN", "PRODUCTION", "LOGGING_LEVEL"]
