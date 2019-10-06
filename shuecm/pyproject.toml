@@ -13,6 +13,9 @@ environs = "^6.0"
 sentry-sdk = "^0.12.3"
 db = {path = "../db/"}
 numpy = "^1.17"  # for commands resolving, etc.
+aio_pika = "^6.1"
+
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
