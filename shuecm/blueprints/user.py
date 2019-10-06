@@ -8,7 +8,6 @@ from vk.bot_framework.storages import TTLDictStorage
 
 from db.models.user import User
 from db.models.user import UserInChat
-from db.structs import Status
 from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
@@ -29,8 +28,7 @@ async def who_i_am_handler(message: types.Message, data: dict):
     else:
         usr_in_chat: UserInChat = data["current_user_in_chat"]
         usr: User = data["current_user"]
-        status = Status(usr_in_chat.status).name
-        return await message.cached_answer(f"ID: {usr.uid}. Статус: {status}.")
+        return await message.cached_answer(f"ID: {usr.uid}.")
 
 
 @bp.described_handler(
@@ -63,8 +61,7 @@ async def who_are_you_handler(message: types.Message, data: dict):
         usr_in_chat: UserInChat = await UserInChat.get_user(
             user=usr.pk, chat=data["current_chat"].pk
         )
-        status = Status(usr_in_chat.status).name
-        await message.answer(f"ID: {usr.uid}. Статус: {status}.")
+        await message.answer(f"ID: {usr.uid}.")
 
     else:
         await message.answer(f"ID: {usr.uid}.")
