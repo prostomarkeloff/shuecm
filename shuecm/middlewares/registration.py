@@ -126,9 +126,9 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             if not usr:
                 usr = await User.create_user(member.member_id)
             if member.is_owner:
-                role = roles[Owner]
+                role = [roles[Owner]]
             elif member.is_admin:
-                role = roles[Admin]
+                role = [roles[Admin]]
             else:
                 role = None
             user_in_chat = await UserInChat.create_user(

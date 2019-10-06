@@ -94,7 +94,7 @@ class UserInChat(umongo.Document):  # noqa
         if roles_ is None:
             roles = []
         else:
-            roles = [role.id for role in roles_]
+            roles = [role.pk for role in roles_]
         usr = UserInChat(user=user, chat=chat, roles=roles)
         await usr.commit()
         return usr
