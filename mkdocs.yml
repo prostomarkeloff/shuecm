@@ -6,6 +6,9 @@ nav:
   - Roles: roles.md
 theme:
   name: 'material'
+  palette:
+    primary: 'red'
+    accent: 'red'
 markdown_extensions:
   - admonition
   - codehilite
