@@ -109,14 +109,10 @@ class IsMe(BaseRule):
 
 ```python3
 from vk import types
-from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
-from vk.bot_framework.storages import TTLDictStorage
 from shuecm.rules.is_me_rule import IsMe
-from db.models.user import User
 
 bp = Blueprint()
-cache = TTLDictStorage()
 
 
 @bp.message_handler(commands=['magic', 'магия'], IsMe(True))
