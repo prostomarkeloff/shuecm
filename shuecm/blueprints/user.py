@@ -49,13 +49,19 @@ async def who_i_am_handler(message: types.Message, data: dict):
     texts_with_args=["кто ты", "ты кто"], have_args=(2, [valid_id_in_db])
 )
 @bp.message_handler(texts_with_args=["кто ты", "ты кто"], with_reply_message=True)
+@bp.message_handler(
+    texts_with_args=["кто ты", "ты кто"], count_fwd_messages=1, with_fwd_messages=True
+)
 async def who_are_you_handler(message: types.Message, data: dict):
     if message.reply_message:
         usr: User = await User.get_user(message.reply_message.from_id)
-        if not usr:
-            return await message.answer("Данный пользователь не зарегистрирован!")
+    elif message.fwd_messages:
+        usr: User = await User.get_user(message.fwd_messages[0].from_id)
     else:
         usr: User = data["valid_id_in_db_user"]
+
+    if not usr:
+        return await message.answer("Данный пользователь не зарегистрирован!")
 
     if message.peer_id != message.from_id:
         usr_in_chat: UserInChat = await UserInChat.get_user(
