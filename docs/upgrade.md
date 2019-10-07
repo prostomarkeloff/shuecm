@@ -121,7 +121,6 @@ cache = TTLDictStorage()
 
 @bp.message_handler(commands=['magic', 'магия'], IsMe(True))
 async def handler(message: types.Message, data: dict):
-    users_count: int = await User.count_documents()
     await message.answer("Отвечаю только человеку с id 256460254")
 ```
 
