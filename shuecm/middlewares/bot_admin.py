@@ -5,6 +5,7 @@ from vk.bot_framework import BaseMiddleware
 from vk.bot_framework import SkipHandler
 from vk.exceptions import APIException
 from vk.types.events.community.event import MessageNew
+from vk.types.message import Action
 from vk.types.responses.messages import GetConversationMembers
 from vk.utils.get_event import get_event_object
 
@@ -30,6 +31,15 @@ class BotAdminMiddleware(BaseMiddleware):
         event: MessageNew = get_event_object(event)
         if event.object.peer_id == event.object.from_id:
             return data
+        if event.object.action:
+            if event.object.action.type is Action.chat_invite_user.value:
+                message = (
+                    "Привет, я @shuecm! Исходный код проекта -- https://github.com/shueteam/shuecm. Для корректной "
+                    "работы бота, ему нужны права администратора. "
+                )
+                if event.object.action.member_id == -event.group_id:
+                    await event.object.answer(message)
+                    return data
 
         try:
             result: GetConversationMembers = (
