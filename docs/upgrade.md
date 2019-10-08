@@ -13,7 +13,7 @@ def setup_blueprints():
     dp.setup_blueprint(your_blueprint)  # включаем your_blueprint в работу
 ```
 
-#### Пример добавления команды
+#### Добавление функционала
 
 Эта команда даёт возможность получить от бота текущее время в беседу, если написать "время" или "сколько времени".
 ```python3
@@ -31,6 +31,8 @@ async def time_handler(message: types.Message, data: dict):
         f"Текущее время: {datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S')}"
     )
 ```
+
+### Обработка для сообщений
 
 Также библиотека vk.py позволяет создавать свои настройки для обработки 
 событий перед попаданием их в хендлеры сообщений. Например, нужно, чтобы бот пропускал
@@ -72,3 +74,99 @@ def setup_middlewares():
     dp.setup_middleware(UsersRegistrationMiddleware())
     dp.setup_middleware(CheckMessageMiddleware())
 ```
+
+### Правила для обработки сообщений
+
+**rules** из библиотеки vk.py позволяют сделать проверку на что-то прямо в
+хендлере сообщений.
+
+Существует два типа правил - **rule** и **named_rule**. Безымянные правила
+и правила со своим названием.
+
+Например вам нужна команда, которой сможете пользоваться 
+только вы, а создавать и модифицировать кастомную роль неудобно, тогда вы 
+можете сделать свою проверку обычным **rule**.
+ Для этого вам нужно создать файл для неё в папке
+shuecm/rules. Создадим файл is_me_rule.py с объявим в нем класс IsMe
+
+Я хочу, чтобы бот отвечал только мне, а мой id в ВК - 256460254
+```python3
+from vk.bot_framework import BaseRule
+from vk import types
+
+
+class IsMe(BaseRule):
+
+    def __init__(self, is_me: bool):
+        self.is_me: bool = is_me
+
+    async def check(self, message: types.Message, data: dict):
+        if not self.is_me and message.from_id != 256460254:
+            return True
+        elif not self.is_me and message.from_id == 256460254:
+            return False
+        elif self.is_me and message.from_id == 256460254:
+            return True
+        elif self.is_me and message.from_id != 256460254:
+            return False
+```
+
+Далее подключим данную проверку к нужной нам команде в blueprints
+
+```python3
+from vk import types
+from vk.bot_framework.dispatcher import Blueprint
+from shuecm.rules.is_me_rule import IsMe
+
+bp = Blueprint()
+
+
+@bp.message_handler(commands=['magic', 'магия'], IsMe(True))
+async def handler(message: types.Message, data: dict):
+    await message.answer("Отвечаю только человеку с id 256460254")
+```
+
+Таким образом чат-менеджер будет отвечать на эту команду
+ только если id будет моим, а остальное просто игнорировать.
+ 
+Если проверке в хендлере нужно своё название, то стоит применить 
+**named_rule**. Для примера сделаем так, чтобы бот отвечал на команду 
+только при непосредственном обращении "бот команда". Последуем примеру из 
+установки предыдущего правила и поместим класс для проверки в
+ shuecm/rules/bot_check.py. 
+
+```python3
+from vk.bot_framework.dispatcher.rule import NamedRule
+
+
+class Commands(NamedRule):
+    key = "commands"  # как проверка будет называться в хендлере
+
+    def __init__(self, commands):
+        self.commands = commands
+        self.prefix = "бот"
+
+    async def check(self, message: types.Message, data: dict):
+        text = message.text.lower()
+        _accepted = False
+        for command in self.commands:
+            if text == f"{self.prefix} {command}":
+                _accepted = True
+
+        return _accepted
+```
+
+Включим данное правило в работу, это делается в app.py в функции
+setup_rules.
+
+```python3
+
+def setup_rules():
+    from shuecm.rules.bot_check import Commands
+
+    dp.setup_rule(Commands)
+```
+
+Теперь все команды, установленные в хендлерах сообщений через 
+```commands=["command1", "command2"]``` буду работать только с префиксом "бот".
+Например "бот command1" или "бот command2".
