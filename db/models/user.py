@@ -110,10 +110,9 @@ class UserInChat(umongo.Document):  # noqa
         usr = await UserInChat.find_one({"chat": chat, "user": user})
         return usr
 
-    @property
-    async def permissions(self):
+    def get_roles(self) -> typing.AsyncGenerator[dict, None]:
         """
-        Get user permissions
+        Get user roles; Returns a async generator.
         :return:
         """
         roles = instance.db.role.aggregate(
@@ -123,7 +122,15 @@ class UserInChat(umongo.Document):  # noqa
                 {"$sort": {"_order": 1}},
             ]
         )
+        return roles
 
+    async def permissions(self, roles: typing.AsyncGenerator[dict, None] = None):
+        """
+        Get user permissions
+        :return:
+        """
+        if roles is None:
+            roles = self.get_roles()
         permissions = DEFAULT_PERMISSIONS.copy()
         async for role in roles:
             permissions.update(role["permissions"])

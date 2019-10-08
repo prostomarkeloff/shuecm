@@ -1,6 +1,3 @@
-import time
-import typing
-
 import umongo
 from umongo import fields
 

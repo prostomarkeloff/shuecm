@@ -3,6 +3,7 @@ import typing
 from vk import types
 from vk.bot_framework import NamedRule
 
+from db.models.user import UserInChat
 from db.structs.status import Permission
 from shuecm.utils import levenshtein
 
@@ -82,7 +83,6 @@ class UserHavePermission(NamedRule):
     }
 
     __slots__ = ("permissions",)
-    # TODO: rewrite with new permissions system
 
     def __init__(self, permissions: typing.List[str]):
         self.permissions: typing.List[str] = []
@@ -93,9 +93,9 @@ class UserHavePermission(NamedRule):
                 self.permissions.append(perm)
 
     async def check(self, message: types.Message, data: dict) -> bool:
-        current_user_permissions: dict = await data[
-            "current_user_in_chat"
-        ].permissions  # used only in chats
+        current_user_permissions: dict = await data["current_user_in_chat"].permissions(
+            data["current_user_in_chat"].get_roles()
+        )  # used only in chats
         passed: bool = True
         for permission in self.permissions:
             if not current_user_permissions.get(permission, False):
