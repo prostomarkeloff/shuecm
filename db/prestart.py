@@ -21,5 +21,5 @@ async def populate_db(drop_db: bool = False):
     await Role.ensure_indexes()
 
 
-def pre_start(loop: asyncio.AbstractEventLoop, drop_db: bool = False):
-    loop.create_task(populate_db(drop_db))
+async def pre_start(loop: asyncio.AbstractEventLoop, drop_db: bool = False):
+    await asyncio.wait_for(fut=populate_db(drop_db), timeout=15, loop=loop)

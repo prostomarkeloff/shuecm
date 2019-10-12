@@ -9,6 +9,7 @@ class Permission(Enum):
     CAN_WARN = "can_warn"
     CAN_BAN = "can_ban"
     CAN_WRITE = "can_write"
+    CAN_ADD_ROLES = "can_add_roles"
     # basic permissions
     # if necessary we can append new permissions
 
@@ -35,6 +36,7 @@ OWNER_PERMISSIONS = {
     Permission.CAN_KICK.value: True,
     Permission.CAN_WARN.value: True,
     Permission.CAN_BAN.value: True,
+    Permission.CAN_ADD_ROLES.value: True,
 }
 
 
