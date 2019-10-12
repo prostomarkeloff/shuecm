@@ -7,9 +7,20 @@ from vk import types
 from vk import VK
 from vk.exceptions import APIException
 
+from db.models.role import Role
 from db.models.user import User
+from shuecm.context import current_chat
 
 vk = VK.get_current()
+
+
+async def valid_role_name(arg: str, message: types.Message):
+    bad_answer = "Данная роль не найдена!"
+    role = await Role.get_role_in_chat(chat=current_chat.get().pk, name=arg)
+    if not role:
+        await message.answer(bad_answer)
+        return False
+    return {"valid_role_name_role": role, "valid_role_name_name": arg}
 
 
 async def valid_id_in_db(
@@ -39,4 +50,4 @@ async def valid_id_in_db(
     return {"valid_id_in_db_user": usr}
 
 
-__all__ = ["valid_id_in_db"]
+__all__ = ["valid_id_in_db", "valid_role_name"]

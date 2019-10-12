@@ -41,7 +41,7 @@ def setup_blueprints():
     Register blueprints in applcation.
     :return:
     """
-    from shuecm.blueprints import info_bp, user_bp, admin_bp
+    from shuecm.blueprints import info_bp, user_bp, admin_bp, role_bp
 
     dp.setup_blueprint(info_bp)
     logger.info("Informational blueprint succesfully initialized!")
@@ -51,6 +51,9 @@ def setup_blueprints():
 
     dp.setup_blueprint(admin_bp)
     logger.info("Administration blueprint succesfully initialized!")
+
+    dp.setup_blueprint(role_bp)
+    logger.info("Role blueprint succesfully initialized!")
 
 
 def setup_middlewares():
@@ -83,7 +86,7 @@ def setup_rules():
 
 async def run():
     # check database before start
-    await pre_start_db(vk.loop, True)
+    await pre_start_db(vk.loop)
 
     # setup sentry error tracking
     setup_sentry()
@@ -96,7 +99,7 @@ async def run():
 
     if not PRODUCTION:
         # Polling used only for tests.
-        # Do not use it production, polling may skip any events (thanks to VK-API ;) )
+        # Do not use it in production, polling may skip any events (thanks to VK-API ;) )
         # Also polling not scalable, really.
         dp.run_polling()
     elif PRODUCTION:

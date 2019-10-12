@@ -100,6 +100,19 @@ class UserInChat(umongo.Document):  # noqa
         return usr
 
     @staticmethod
+    async def add_role(user: "UserInChat", role: str):
+        """
+        :param user:
+        :param role: '_id' of object
+        :return:
+        """
+        current = user.dump()
+        roles: list = current["roles"]
+        roles.append(role)
+        user.update({"roles": roles})
+        return await user.commit()
+
+    @staticmethod
     async def get_user(chat: str, user: str):
         """
         Get user via chat '_id' and user '_id'

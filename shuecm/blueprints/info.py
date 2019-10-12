@@ -20,4 +20,15 @@ async def handler(message: types.Message, data: dict):
     return await message.cached_answer(answer)
 
 
+@bp.message_handler(texts=["роли"])
+async def info_role_handler(message: types.Message, data: dict):
+    text = (
+        "Подробнее о ролях: https://shueteam.github.io/shuecm/roles/.\n\n ВАЖНО: при добавлении роли с более "
+        "высоким приоритетом чем у Вас, данная роль сможет Вас кикнуть, или натворить каких-либо ещё гадостей. "
+        "Делайте приоритет роли владельца беседы всегда самым высоким. "
+    )
+
+    await message.answer(text)
+
+
 __all__ = ["bp"]

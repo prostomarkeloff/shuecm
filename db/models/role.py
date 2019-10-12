@@ -24,6 +24,11 @@ class Role(umongo.Document):  # noqa
         collection = instance.db.roles
 
     @staticmethod
+    async def get_role_in_chat(chat: str, name: str):
+        role = await Role.find_one({"chat": chat, "name": name})
+        return role
+
+    @staticmethod
     async def create_role(
         chat: Chat,
         name: str = ":sparkles:",

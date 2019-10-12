@@ -1,0 +1,87 @@
+"""
+Blueprint for work with roles.
+"""
+import typing
+
+from vk import types
+from vk.bot_framework.dispatcher import Blueprint
+
+from db.models.role import Role
+from db.models.user import User
+from db.models.user import UserInChat
+from db.structs.status import Permission
+from shuecm.validators import valid_role_name
+
+bp = Blueprint()
+
+
+@bp.message_handler(
+    texts_with_args=["выдать роль"],
+    have_args=(2, [valid_role_name]),
+    with_reply_message=True,
+)
+async def give_role(message: types.Message, data: dict):
+    role = data["valid_role_name_role"]
+    usr = await User.get_user(message.reply_message.from_id)
+    usr_in_chat = await UserInChat.get_user(chat=data["current_chat"].pk, user=usr.pk)
+    have_this_role = False
+    async for role_ in usr_in_chat.get_roles():
+        if role_["name"] == data["valid_role_name_name"]:
+            have_this_role = True
+            break
+
+    if have_this_role:
+        return await message.answer("У данного пользователя уже есть эта роль!")
+    await UserInChat.add_role(user=usr_in_chat, role=role.pk)
+    await message.answer("Данная роль успешно выдана пользователю!")
+
+
+@bp.described_handler(
+    description="Обработчик для добавления роли для беседы",
+    have_args=["Имя роли", "Приоритет", "Возможности"],
+)
+@bp.message_handler(
+    texts_with_args=["добавить роль"], with_permissions=[Permission.CAN_ADD_ROLES]
+)
+async def add_role(message: types.Message, data: dict):
+    args = message.get_args()[1:]  # first arg it's 'роль' word
+    if len(args) < 3:
+        return
+    name: str
+    priority: typing.Union[str, int]
+    permissions: typing.Union[str, typing.List[str], typing.Dict]
+    name, priority, *permissions = args
+    if not name.isalpha():
+        return await message.answer("Некорректное имя роли!")
+    if not priority.isdigit():
+        return await message.answer("Некорректный приоритет роли!")
+    else:
+        priority = int(priority)
+
+    if isinstance(permissions, str):
+        try:
+            permissions = {Permission(permissions).value: True}
+        except ValueError:
+            return await message.answer("Некорректный тип полномочия!")
+    elif isinstance(permissions, list):
+        permissions_ = {}
+        perm: str
+        for perm in permissions:
+            perm = perm.lower().strip(",")
+            try:
+                perm_ = Permission(perm)
+            except ValueError:
+                return await message.answer("Некорректный тип полномочия!")
+            permissions_[perm_.value] = True
+        permissions = permissions_
+
+    res = await Role.get_role_in_chat(chat=data["current_chat"].pk, name=name)
+    if res:
+        return await message.answer("Роль с указанным именем уже существует!")
+    await Role.create_role(
+        chat=data["current_chat"], name=name, priority=priority, permissions=permissions
+    )
+    await message.answer("Роль успешно создана!")
+
+
+__all__ = ["bp"]

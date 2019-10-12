@@ -67,10 +67,10 @@ async def who_are_you_handler(message: types.Message, data: dict):
         usr_in_chat: UserInChat = await UserInChat.get_user(
             user=usr.pk, chat=data["current_chat"].pk
         )
-        roles = ""
+        roles = []
         async for role in usr_in_chat.get_roles():
-            roles += role["name"]
-        await message.answer(f"ID: {usr.uid}. Роли: {''.join(roles)}")
+            roles.append(role["name"])
+        await message.answer(f"ID: {usr.uid}. Роли: {', '.join(roles)}")
 
     else:
         await message.answer(f"ID: {usr.uid}.")
