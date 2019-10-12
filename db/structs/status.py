@@ -2,7 +2,6 @@
 For work with user statuses.
 """
 from enum import Enum
-from enum import IntFlag
 
 
 class Permission(Enum):
@@ -17,6 +16,7 @@ class Permission(Enum):
 class DefaultRole(Enum):
     NAME: str
     PERMISSIONS: dict
+    PRIORITY: int
 
 
 DEFAULT_PERMISSIONS = {Permission.CAN_WRITE.value: True}
@@ -39,23 +39,27 @@ OWNER_PERMISSIONS = {
 
 
 class Moderator(DefaultRole):
-    NAME = "модератор"
+    NAME = "Модератор"
     PERMISSIONS = MODERATOR_PERMISSIONS
+    PRIORITY = 2
 
 
 class SeniorModerator(DefaultRole):
-    NAME = "старший модератор"
+    NAME = "Старший модератор"
     PERMISSIONS = SENIOR_MODERATOR_PERMISSIONS
+    PRIORITY = 3
 
 
 class Admin(DefaultRole):
-    NAME = "админ"
+    NAME = "Админ"
     PERMISSIONS = ADMIN_PERMISSIONS
+    PRIORITY = 4
 
 
 class Owner(DefaultRole):
-    NAME = "владелец"
+    NAME = "Владелец"
     PERMISSIONS = OWNER_PERMISSIONS
+    PRIORITY = 5
 
 
 DEFAULT_ROLES = [Moderator, SeniorModerator, Admin, Owner]

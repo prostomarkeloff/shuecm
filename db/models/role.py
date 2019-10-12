@@ -9,7 +9,7 @@ instance: umongo.Instance = Instance.get_current().instance
 
 
 @instance.register
-class Role(umongo.Document):
+class Role(umongo.Document):  # noqa
     """
     Custom role
     """
@@ -18,15 +18,21 @@ class Role(umongo.Document):
     chat = fields.ReferenceField(Chat, required=True)
     permissions = fields.DictField(default={})
 
+    priority = fields.IntegerField(required=True)
+
     class Meta:
         collection = instance.db.roles
 
     @staticmethod
     async def create_role(
-        chat: Chat, name: str = ":sparkles:", permissions: dict = None
+        chat: Chat,
+        name: str = ":sparkles:",
+        permissions: dict = None,
+        priority: int = 1,
     ):
         """
         Create role in database
+        :param priority:
         :param chat:
         :param name: visible name
         :param permissions:
@@ -34,7 +40,7 @@ class Role(umongo.Document):
         """
         if permissions is None:
             permissions = {}
-        role = Role(chat=chat, name=name, permissions=permissions)
+        role = Role(chat=chat, name=name, permissions=permissions, priority=priority)
         await role.commit()
         return role
 
@@ -43,7 +49,10 @@ class Role(umongo.Document):
         roles = {}
         for role_ in DEFAULT_ROLES:
             role = Role(
-                chat=chat, name=role_.NAME.value, permissions=role_.PERMISSIONS.value
+                chat=chat,
+                name=role_.NAME.value,
+                permissions=role_.PERMISSIONS.value,
+                priority=role_.PRIORITY.value,
             )
             await role.commit()
             roles[role_] = role

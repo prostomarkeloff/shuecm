@@ -2,6 +2,34 @@ import typing
 
 import numpy as np
 
+from db.models.user import User
+from db.models.user import UserInChat
+from shuecm.context import current_chat
+from shuecm.context import current_user_in_chat
+
+
+async def check_role_priority(other_user_id: int) -> bool:
+    user = current_user_in_chat.get()
+    user_priority: int = 0
+    async for role in user.get_roles():
+        user_priority += role["priority"]
+    other_user_priority: int = 0
+    other_user_ = await User.get_user(other_user_id)
+    other_user: UserInChat
+    other_user = await UserInChat.get_user(
+        chat=current_chat.get().pk, user=other_user_.pk
+    )
+
+    async for role in other_user.get_roles():
+        other_user_priority += role["priority"]
+
+    return user_priority > other_user_priority
+
+
+def format_chat_id(chat_id: int) -> int:
+    """Format chat id for 'api.message.remove_chat_user'"""
+    return chat_id - 2000000000
+
 
 def levenshtein(seq1: typing.Sequence[str], seq2: typing.Sequence[str]) -> float:
     """
