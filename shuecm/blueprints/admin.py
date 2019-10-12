@@ -20,7 +20,9 @@ api = VK.get_current().get_api()
 async def handle_kick(message: types.Message, data: dict):
     can_this = await check_role_priority(message.reply_message.from_id)
     if not can_this:
-        return await message.answer("Вы не имеете права для этого действия!")
+        return await message.answer(
+            "Ваша роль в беседе ниже чем роль того, кого Вы пытаетесь исключить."
+        )
     await api.messages.remove_chat_user(
         chat_id=format_chat_id(current_chat.get().chat_id),
         user_id=message.reply_message.from_id,

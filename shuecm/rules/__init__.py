@@ -101,6 +101,9 @@ class UserHavePermission(NamedRule):
             if not current_user_permissions.get(permission, False):
                 passed = False
                 break
+        if not passed:
+            # user should know about it
+            await message.answer("Вы не имеете права для этого действия!")
         return passed
 
 
