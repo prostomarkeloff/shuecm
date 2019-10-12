@@ -19,6 +19,7 @@ bp = Blueprint()
     texts_with_args=["выдать роль"],
     have_args=(2, [valid_role_name]),
     with_reply_message=True,
+    with_permissions=[Permission.CAN_GIVE_ROLES],
 )
 async def give_role(message: types.Message, data: dict):
     role = data["valid_role_name_role"]

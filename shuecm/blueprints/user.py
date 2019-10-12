@@ -28,7 +28,10 @@ async def who_i_am_handler(message: types.Message, data: dict):
     else:
         usr_in_chat: UserInChat = data["current_user_in_chat"]
         usr: User = data["current_user"]
-        return await message.cached_answer(f"ID: {usr.uid}.")
+        roles = []
+        async for role in usr_in_chat.get_roles():
+            roles.append(role["name"])
+        return await message.cached_answer(f"ID: {usr.uid}. Роли: {', '.join(roles)}")
 
 
 @bp.described_handler(
@@ -48,9 +51,9 @@ async def who_i_am_handler(message: types.Message, data: dict):
 @bp.message_handler(
     texts_with_args=["кто ты", "ты кто"], have_args=(2, [valid_id_in_db])
 )
-@bp.message_handler(texts_with_args=["кто ты", "ты кто"], with_reply_message=True)
+@bp.message_handler(texts=["кто ты", "ты кто"], with_reply_message=True)
 @bp.message_handler(
-    texts_with_args=["кто ты", "ты кто"], count_fwd_messages=1, with_fwd_messages=True
+    texts=["кто ты", "ты кто"], count_fwd_messages=1, with_fwd_messages=True
 )
 async def who_are_you_handler(message: types.Message, data: dict):
     if message.reply_message:
