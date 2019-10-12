@@ -16,6 +16,8 @@ async def check_role_priority(other_user_id: int) -> bool:
     other_user_priority: int = 0
     other_user_ = await User.get_user(other_user_id)
     other_user: UserInChat
+    if not other_user_:
+        return False
     other_user = await UserInChat.get_user(
         chat=current_chat.get().pk, user=other_user_.pk
     )

@@ -83,7 +83,7 @@ def setup_rules():
 
 async def run():
     # check database before start
-    pre_start_db(vk.loop)
+    pre_start_db(vk.loop, drop_db=True)
 
     # setup sentry error tracking
     setup_sentry()

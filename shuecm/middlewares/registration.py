@@ -131,10 +131,12 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
                 role = [roles[Admin]]
             else:
                 role = None
-            user_in_chat = await UserInChat.create_user(
-                user=usr.pk, chat=chat.pk, roles_=role
-            )
-            await User.add_account(usr, user_in_chat.pk)  # add new account
+            user_in_chat = await UserInChat.get_user(chat.pk, usr.pk)
+            if not user_in_chat:
+                user_in_chat = await UserInChat.create_user(
+                    user=usr.pk, chat=chat.pk, roles_=role
+                )
+                await User.add_account(usr, user_in_chat.pk)  # add new account
 
         logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
         await event.object.answer(f"Данный чат успешно зарегистрирован!")
