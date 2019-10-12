@@ -9,6 +9,8 @@ from shuecm.context import current_user_in_chat
 
 
 async def check_role_priority(other_user_id: int) -> bool:
+    if other_user_id < 0:
+        return True
     user = current_user_in_chat.get()
     user_priority: int = 0
     async for role in user.get_roles():

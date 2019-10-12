@@ -23,6 +23,8 @@ bp = Blueprint()
 async def give_role(message: types.Message, data: dict):
     role = data["valid_role_name_role"]
     usr = await User.get_user(message.reply_message.from_id)
+    if not usr:
+        return await message.answer("Данный пользователь не зарегистрирован!")
     usr_in_chat = await UserInChat.get_user(chat=data["current_chat"].pk, user=usr.pk)
     have_this_role = False
     async for role_ in usr_in_chat.get_roles():

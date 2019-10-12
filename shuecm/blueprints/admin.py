@@ -25,7 +25,7 @@ async def handle_kick(message: types.Message, data: dict):
         )
     await api.messages.remove_chat_user(
         chat_id=format_chat_id(current_chat.get().chat_id),
-        user_id=message.reply_message.from_id,
+        member_id=message.reply_message.from_id,
     )
     await message.answer("Пользователь успешно удалён!")
 
