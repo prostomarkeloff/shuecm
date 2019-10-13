@@ -1,6 +1,8 @@
 """
 Blueprint for user commands.
 """
+import time
+
 from vk import types
 from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
@@ -14,6 +16,35 @@ bp = Blueprint()
 cache = TTLDictStorage()
 
 
+async def get_data_about_user(current_user: User, in_chat: bool = False, **kwargs):
+    usr: User = current_user
+    reg_date = time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(usr.created_time))
+    if in_chat:
+        usr_in_chat: UserInChat = kwargs.pop("user_in_chat")
+        roles = []
+        async for role in usr_in_chat.get_roles():
+            roles.append(role["name"])
+        roles = ", ".join(roles)
+        if not roles:
+            roles = "❌"
+        join_date = time.strftime(
+            "%d.%m.%Y %H:%M:%S", time.localtime(usr_in_chat.join_date)
+        )
+        text = f"""
+ID: {usr.uid}
+Дата регистрации: {reg_date}
+Роли: {roles}
+Дата вступления в беседу: {join_date}
+"""
+    else:
+        text = f"""
+ID: {usr.uid}
+Дата регистрации: {reg_date}
+Состоит в: {len(usr.accounts)} беседах.
+"""
+    return text
+
+
 @bp.described_handler(
     description="Обработчик для получения информации о себе",
     options=["Написать 'кто я'"],
@@ -22,16 +53,16 @@ cache = TTLDictStorage()
 @bp.message_handler(texts=["кто я", "я кто"])
 @cached_handler(cache, for_specify_user=True)
 async def who_i_am_handler(message: types.Message, data: dict):
+    usr: User = data["current_user"]
     if message.from_id == message.peer_id:
-        usr: User = data["current_user"]
-        return await message.cached_answer(f"ID: {usr.uid}.")
+        return await message.cached_answer(
+            await get_data_about_user(usr, in_chat=False)
+        )
     else:
         usr_in_chat: UserInChat = data["current_user_in_chat"]
-        usr: User = data["current_user"]
-        roles = []
-        async for role in usr_in_chat.get_roles():
-            roles.append(role["name"])
-        return await message.cached_answer(f"ID: {usr.uid}. Роли: {', '.join(roles)}")
+        return await message.cached_answer(
+            await get_data_about_user(usr, in_chat=True, user_in_chat=usr_in_chat)
+        )
 
 
 @bp.described_handler(
@@ -70,13 +101,11 @@ async def who_are_you_handler(message: types.Message, data: dict):
         usr_in_chat: UserInChat = await UserInChat.get_user(
             user=usr.pk, chat=data["current_chat"].pk
         )
-        roles = []
-        async for role in usr_in_chat.get_roles():
-            roles.append(role["name"])
-        await message.answer(f"ID: {usr.uid}. Роли: {', '.join(roles)}")
-
+        await message.answer(
+            await get_data_about_user(usr, in_chat=True, user_in_chat=usr_in_chat)
+        )
     else:
-        await message.answer(f"ID: {usr.uid}.")
+        await message.answer(await get_data_about_user(usr, in_chat=False))
 
 
 __all__ = ["bp"]
