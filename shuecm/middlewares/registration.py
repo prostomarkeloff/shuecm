@@ -3,6 +3,7 @@ Registration middleware for shuecm.
 """
 import logging
 
+from pymongo import errors as pymongo_errors
 from vk.bot_framework import BaseMiddleware
 from vk.bot_framework import SkipHandler
 from vk.types.events.community.event import MessageNew
@@ -124,7 +125,10 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
                 continue
             usr = await User.get_user(member.member_id)
             if not usr:
-                usr = await User.create_user(member.member_id)
+                try:
+                    usr = await User.create_user(member.member_id)
+                except pymongo_errors.DuplicateKeyError:
+                    usr = await User.get_user(member.member_id)
             if member.is_owner:
                 role = [roles[Owner]]
             elif member.is_admin:
