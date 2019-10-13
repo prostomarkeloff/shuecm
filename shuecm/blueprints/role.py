@@ -10,26 +10,32 @@ from db.models.role import Role
 from db.models.user import User
 from db.models.user import UserInChat
 from db.structs.status import Permission
-from shuecm.validators import valid_role_name
+from shuecm.validators import valid_role_name_in_db
 
 bp = Blueprint()
 
 
+@bp.described_handler(
+    description="Обработчик для выдачи роли пользователю.",
+    have_args=["Имя роли в БД"],
+    examples=["выдать роль <имя_роли> *пересланное сообщение*"],
+)
 @bp.message_handler(
     texts_with_args=["выдать роль"],
-    have_args=(2, [valid_role_name]),
+    in_chat=True,
+    have_args=(2, [valid_role_name_in_db]),
     with_reply_message=True,
     with_permissions=[Permission.CAN_GIVE_ROLES],
 )
 async def give_role(message: types.Message, data: dict):
-    role = data["valid_role_name_role"]
+    role = data["valid_role_name_in_db_role"]
     usr = await User.get_user(message.reply_message.from_id)
     if not usr:
         return await message.answer("Данный пользователь не зарегистрирован!")
     usr_in_chat = await UserInChat.get_user(chat=data["current_chat"].pk, user=usr.pk)
     have_this_role = False
     async for role_ in usr_in_chat.get_roles():
-        if role_["name"] == data["valid_role_name_name"]:
+        if role_["name"] == data["valid_role_name_in_db_name"]:
             have_this_role = True
             break
 
@@ -44,7 +50,9 @@ async def give_role(message: types.Message, data: dict):
     have_args=["Имя роли", "Приоритет", "Возможности"],
 )
 @bp.message_handler(
-    texts_with_args=["добавить роль"], with_permissions=[Permission.CAN_ADD_ROLES]
+    texts_with_args=["добавить роль", "создать роль"],
+    in_chat=True,
+    with_permissions=[Permission.CAN_ADD_ROLES],
 )
 async def add_role(message: types.Message, data: dict):
     args = message.get_args()[1:]  # first arg it's 'роль' word

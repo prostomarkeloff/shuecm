@@ -3,7 +3,6 @@ import typing
 from vk import types
 from vk.bot_framework import NamedRule
 
-from db.models.user import UserInChat
 from db.structs.status import Permission
 from shuecm.utils import levenshtein
 
