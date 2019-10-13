@@ -86,11 +86,18 @@ class UserInChat(umongo.Document):  # noqa
     chat: Chat = fields.ReferenceField(Chat)  # reference to current chat
     roles = fields.ListField(fields.ObjectIdField, default=[])
 
+    join_date: int = fields.IntegerField(default=time.time)
+
     @staticmethod
-    async def create_user(user: User, chat: Chat, roles_: typing.List[Role] = None):
+    async def create_user(
+        user: User, chat: Chat, roles_: typing.List[Role] = None, join_date: int = None
+    ):
         """
         Create user in database
         """
+        if join_date is None:
+            join_date = time.time()
+
         if roles_ is None:
             roles = []
         else:

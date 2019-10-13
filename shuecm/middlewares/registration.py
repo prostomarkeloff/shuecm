@@ -134,7 +134,7 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
             user_in_chat = await UserInChat.get_user(chat.pk, usr.pk)
             if not user_in_chat:
                 user_in_chat = await UserInChat.create_user(
-                    user=usr.pk, chat=chat.pk, roles_=role
+                    user=usr.pk, chat=chat.pk, roles_=role, join_date=member.join_date
                 )
                 await User.add_account(usr, user_in_chat.pk)  # add new account
 
