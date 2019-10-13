@@ -106,10 +106,7 @@ async def run():
         # We use rabbitmq for event dispatching.
         # You can run this code in many processes (via multiprocessing module)
         # ... for more performance or run many instances of application.
-        from vk.bot_framework.extensions import RabbitMQ
-
-        dp.setup_extension(RabbitMQ)
-        dp.run_extension("rabbitmq", vk=vk, queue_name="TODO: CHANGE THIS.")
+        raise RuntimeError("Production environment now not setuped.")
 
 
 if __name__ == "__main__":
