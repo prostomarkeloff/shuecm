@@ -45,7 +45,7 @@ async def give_role(message: types.Message, data: dict):
     role = data["valid_role_name_in_db_role"]
     usr = await User.get_user(message.reply_message.from_id)
     if not usr:
-        return await message.answer("Данный пользователь не зарегистрирован!")
+        return await message.answer("⛔ Данный пользователь не зарегистрирован!")
     usr_in_chat = await UserInChat.get_user(chat=data["current_chat"].pk, user=usr.pk)
     have_this_role = False
     async for role_ in usr_in_chat.get_roles():
@@ -54,9 +54,9 @@ async def give_role(message: types.Message, data: dict):
             break
 
     if have_this_role:
-        return await message.answer("У данного пользователя уже есть эта роль!")
+        return await message.answer("⛔ У данного пользователя уже есть эта роль!")
     await UserInChat.add_role(user=usr_in_chat, role=role.pk)
-    await message.answer("Данная роль успешно выдана пользователю!")
+    await message.answer("✅ Данная роль успешно выдана пользователю!")
 
 
 @bp.described_handler(
@@ -77,9 +77,9 @@ async def add_role(message: types.Message, data: dict):
     permissions: typing.Union[str, typing.List[str], typing.Dict]
     name, priority, *permissions = args
     if not name.isalpha():
-        return await message.answer("Некорректное имя роли!")
+        return await message.answer("⛔ Некорректное имя роли!")
     if not priority.isdigit():
-        return await message.answer("Некорректный приоритет роли!")
+        return await message.answer("⛔ Некорректный приоритет роли!")
     else:
         priority = int(priority)
 
@@ -87,7 +87,7 @@ async def add_role(message: types.Message, data: dict):
         try:
             permissions = {Permission(permissions).value: True}
         except ValueError:
-            return await message.answer("Некорректный тип полномочия!")
+            return await message.answer("⛔ Некорректный тип полномочия!")
     elif isinstance(permissions, list):
         permissions_ = {}
         perm: str
@@ -96,17 +96,17 @@ async def add_role(message: types.Message, data: dict):
             try:
                 perm_ = Permission(perm)
             except ValueError:
-                return await message.answer("Некорректный тип полномочия!")
+                return await message.answer("⛔ Некорректный тип полномочия!")
             permissions_[perm_.value] = True
         permissions = permissions_
 
     res = await Role.get_role_in_chat(chat=data["current_chat"].pk, name=name)
     if res:
-        return await message.answer("Роль с указанным именем уже существует!")
+        return await message.answer("⛔ Роль с указанным именем уже существует!")
     await Role.create_role(
         chat=data["current_chat"], name=name, priority=priority, permissions=permissions
     )
-    await message.answer("Роль успешно создана!")
+    await message.answer("✅ Роль успешно создана!")
 
 
 __all__ = ["bp"]

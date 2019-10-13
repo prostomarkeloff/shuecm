@@ -44,18 +44,22 @@ async def get_data_about_user(current_user: User, in_chat: bool = False, **kwarg
             "%d.%m.%Y | %H:%M:%S", time.localtime(usr_in_chat.join_date)
         )
         text = f"""
-ID: {usr.uid}
-Дата регистрации в ВК: {vk_reg_date}
-Дата регистрации в @shuecm: {reg_date}
-Роли: {roles}
-Дата вступления в беседу: {join_date}
+💭 Информация о пользователе:
+
+🌈 ID: {usr.uid}
+💤 Дата регистрации в ВК: {vk_reg_date}
+💤 Дата регистрации в @shuecm: {reg_date}
+⭐ Роли: {roles}
+👤 Дата вступления в беседу: {join_date}
 """
     else:
         text = f"""
-ID: {usr.uid}
-Дата регистрации в ВК: {vk_reg_date}
-Дата регистрации в @shuecm: {reg_date}
-Состоит в: {len(usr.accounts)} беседах.
+💭 Информация о пользователе:
+
+🌈 ID: {usr.uid}
+💤 Дата регистрации в ВК: {vk_reg_date}
+💤 Дата регистрации в @shuecm: {reg_date}
+👥 Состоит в: {len(usr.accounts)} беседах.
 """
     return text
 
@@ -110,7 +114,7 @@ async def who_are_you_handler(message: types.Message, data: dict):
         usr: User = data["valid_id_in_db_user"]
 
     if not usr:
-        return await message.answer("Данный пользователь не зарегистрирован!")
+        return await message.answer("⛔ Данный пользователь не зарегистрирован!")
 
     if message.peer_id != message.from_id:
         usr_in_chat: UserInChat = await UserInChat.get_user(

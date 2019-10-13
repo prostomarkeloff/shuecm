@@ -16,7 +16,7 @@ cache = TTLDictStorage()
 @cached_handler(storage=cache, expire=30, for_specify_user=False)
 async def handler(message: types.Message, data: dict):
     users_count: int = await User.count_documents()
-    answer = f"Привет! Я чат-менеджер @shuecm. \n\n\nСейчас зарегистрировано: {users_count} пользователя(ей)!"
+    answer = f"📢 Привет! Я чат-менеджер @shuecm. \n\n\nСейчас зарегистрировано: {users_count} пользователя(ей)!"
     return await message.cached_answer(answer)
 
 
