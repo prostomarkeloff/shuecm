@@ -138,6 +138,11 @@ class ChatsRegistrationMiddleware(BaseMiddleware):
                 )
                 await User.add_account(usr, user_in_chat.pk)  # add new account
 
+            user_in_chat.update(
+                {"join_date": member.join_date}
+            )  # replace older join_date
+            await user_in_chat.commit()  # commit changes
+
         logger.info(f"Chat with id ({event.object.peer_id}) succesfully registered!")
         await event.object.answer(f"Данный чат успешно зарегистрирован!")
         data["current_chat"] = chat  # place the chat object to data
