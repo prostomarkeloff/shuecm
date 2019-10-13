@@ -9,7 +9,7 @@ from shuecm.utils import levenshtein
 
 class Texts(NamedRule):
     key = "texts"
-    prefix = ["", "!", "/", "."]  # support many prefixes
+    prefix = ["", "!", "/", ".", "шуе", "шуечм", "ппш"]  # support many prefixes
     meta = {
         "name": "Texts",
         "description": "Checking message text. Using levenshtein distance for solving wrong messages",

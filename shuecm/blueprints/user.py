@@ -3,7 +3,9 @@ Blueprint for user commands.
 """
 import time
 
+import xmltodict
 from vk import types
+from vk import VK
 from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
 from vk.bot_framework.storages import TTLDictStorage
@@ -14,11 +16,22 @@ from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
 cache = TTLDictStorage()
+client = VK.get_current().client
 
 
 async def get_data_about_user(current_user: User, in_chat: bool = False, **kwargs):
+    async with client.get(f"https://vk.com/foaf.php?id={current_user.uid}") as resp:
+        resp = await resp.text()
+        parsed = xmltodict.parse(resp)
+        vk_reg_date = (
+            parsed["rdf:RDF"]["foaf:Person"]["ya:created"]["@dc:date"]
+            .replace("-", ".")
+            .replace("T", " | ")
+            .replace("+03:00", "")
+        )
+
     usr: User = current_user
-    reg_date = time.strftime("%d.%m.%Y %H:%M:%S", time.localtime(usr.created_time))
+    reg_date = time.strftime("%d.%m.%Y | %H:%M:%S", time.localtime(usr.created_time))
     if in_chat:
         usr_in_chat: UserInChat = kwargs.pop("user_in_chat")
         roles = []
@@ -28,18 +41,20 @@ async def get_data_about_user(current_user: User, in_chat: bool = False, **kwarg
         if not roles:
             roles = "❌"
         join_date = time.strftime(
-            "%d.%m.%Y %H:%M:%S", time.localtime(usr_in_chat.join_date)
+            "%d.%m.%Y | %H:%M:%S", time.localtime(usr_in_chat.join_date)
         )
         text = f"""
 ID: {usr.uid}
-Дата регистрации: {reg_date}
+Дата регистрации в ВК: {vk_reg_date}
+Дата регистрации в @shuecm: {reg_date}
 Роли: {roles}
 Дата вступления в беседу: {join_date}
 """
     else:
         text = f"""
 ID: {usr.uid}
-Дата регистрации: {reg_date}
+Дата регистрации в ВК: {vk_reg_date}
+Дата регистрации в @shuecm: {reg_date}
 Состоит в: {len(usr.accounts)} беседах.
 """
     return text

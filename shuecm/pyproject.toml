@@ -17,6 +17,7 @@ dnspython = "^1.16"
 numpy = "^1.17"  # for commands resolving, etc.
 aio_pika = "^6.1"
 motor = "^2.0"
+xmltodict = "^0.12.0"
 
 
 
