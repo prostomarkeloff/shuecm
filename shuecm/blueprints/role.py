@@ -4,7 +4,9 @@ Blueprint for work with roles.
 import typing
 
 from vk import types
+from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
+from vk.bot_framework.storages import TTLDictStorage
 
 from db.models.role import Role
 from db.models.user import User
@@ -13,6 +15,18 @@ from db.structs.status import Permission
 from shuecm.validators import valid_role_name_in_db
 
 bp = Blueprint()
+cache = TTLDictStorage()
+
+
+@bp.message_handler(texts=["роли"], in_chat=True)
+@cached_handler(cache, expire=10, for_specify_user=True)
+async def chat_roles(message: types.Message, data: dict):
+    roles = await Role.get_roles_in_chat(chat=data["current_chat"].pk)
+    text = "📗 Текущие роли в беседе: \n\n"
+    for role in sorted(roles, key=lambda role: role.priority, reverse=True):
+        text += f"✏ Название: {role.name}.\n ⭐ Приоритет: {role.priority}.\n ℹ Полномочия: {', '.join(role.permissions)}\n\n"
+
+    return await message.cached_answer(text)
 
 
 @bp.described_handler(

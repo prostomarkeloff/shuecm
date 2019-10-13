@@ -1,3 +1,5 @@
+import typing
+
 import umongo
 from umongo import fields
 
@@ -27,6 +29,14 @@ class Role(umongo.Document):  # noqa
     async def get_role_in_chat(chat: str, name: str):
         role = await Role.find_one({"chat": chat, "name": name})
         return role
+
+    @staticmethod
+    async def get_roles_in_chat(chat: str) -> typing.List["Role"]:
+        roles = Role.find({"chat": chat})
+        roles_ = []
+        async for role in roles:
+            roles_.append(role)
+        return roles_
 
     @staticmethod
     async def create_role(
