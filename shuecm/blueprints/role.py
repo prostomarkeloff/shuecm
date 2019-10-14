@@ -18,13 +18,17 @@ bp = Blueprint()
 cache = TTLDictStorage()
 
 
+@bp.described_handler(
+    description="Обработчик для получения информации о ролях в беседе",
+    examples=["роли"],
+)
 @bp.message_handler(texts=["роли"], in_chat=True)
 @cached_handler(cache, expire=10, for_specify_user=True)
 async def chat_roles(message: types.Message, data: dict):
     roles = await Role.get_roles_in_chat(chat=data["current_chat"].pk)
     text = "📗 Текущие роли в беседе: \n\n"
     for role in sorted(roles, key=lambda role: role.priority, reverse=True):
-        text += f"✏ Название: {role.name}.\n ⭐ Приоритет: {role.priority}.\n ℹ Полномочия: {', '.join(role.permissions)}\n\n"
+        text += f"✏ Название: {role.name}.\n ⭐ Приоритет: {role.priority}.\n ℹ Полномочия: {', '.join(role.permissions)}\n\n "
 
     return await message.cached_answer(text)
 
@@ -62,6 +66,9 @@ async def give_role(message: types.Message, data: dict):
 @bp.described_handler(
     description="Обработчик для добавления роли для беседы",
     have_args=["Имя роли", "Приоритет", "Возможности"],
+    examples=[
+        "добавить роль Админ 100000 can_kick, can_give_roles, can_add_roles, can_ban"
+    ],
 )
 @bp.message_handler(
     texts_with_args=["добавить роль", "создать роль"],

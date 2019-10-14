@@ -1,6 +1,9 @@
+import time
 import typing
 
 import numpy as np
+import xmltodict
+from vk import VK
 
 from db.models.user import User
 from db.models.user import UserInChat
@@ -9,6 +12,7 @@ from shuecm.context import current_user_in_chat
 
 
 async def check_role_priority(other_user_id: int) -> bool:
+    """Returns True if current user priority higher than other user"""
     if other_user_id < 0:
         return True
     user = current_user_in_chat.get()
@@ -33,6 +37,52 @@ async def check_role_priority(other_user_id: int) -> bool:
 def format_chat_id(chat_id: int) -> int:
     """Format chat id for 'api.message.remove_chat_user'"""
     return chat_id - 2000000000
+
+
+async def get_user_profile_text(current_user: User, in_chat: bool = False, **kwargs):
+    client = VK.get_current().client
+    async with client.get(f"https://vk.com/foaf.php?id={current_user.uid}") as resp:
+        resp = await resp.text()
+        parsed = xmltodict.parse(resp)
+        vk_reg_date = (
+            parsed["rdf:RDF"]["foaf:Person"]["ya:created"]["@dc:date"]
+            .replace("-", ".")
+            .replace("T", " | ")
+            .replace("+03:00", "")
+        )
+
+    usr: User = current_user
+    reg_date = time.strftime("%d.%m.%Y | %H:%M:%S", time.localtime(usr.created_time))
+    if in_chat:
+        usr_in_chat: UserInChat = kwargs.pop("user_in_chat")
+        roles = []
+        async for role in usr_in_chat.get_roles():
+            roles.append(role["name"])
+        roles = ", ".join(roles)
+        if not roles:
+            roles = "❌"
+        join_date = time.strftime(
+            "%d.%m.%Y | %H:%M:%S", time.localtime(usr_in_chat.join_date)
+        )
+        text = f"""
+💭 Информация о пользователе:
+
+🌈 ID: {usr.uid}
+💤 Дата регистрации в ВК: {vk_reg_date}
+💤 Дата регистрации в @shuecm: {reg_date}
+⭐ Роли: {roles}
+👤 Дата вступления в беседу: {join_date}
+"""
+    else:
+        text = f"""
+💭 Информация о пользователе:
+
+🌈 ID: {usr.uid}
+💤 Дата регистрации в ВК: {vk_reg_date}
+💤 Дата регистрации в @shuecm: {reg_date}
+👥 Состоит в: {len(usr.accounts)} беседах.
+"""
+    return text
 
 
 def levenshtein(seq1: typing.Sequence[str], seq2: typing.Sequence[str]) -> float:

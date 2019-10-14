@@ -1,67 +1,18 @@
 """
 Blueprint for user commands.
 """
-import time
-
-import xmltodict
 from vk import types
-from vk import VK
 from vk.bot_framework.addons.caching import cached_handler
 from vk.bot_framework.dispatcher import Blueprint
 from vk.bot_framework.storages import TTLDictStorage
 
 from db.models.user import User
 from db.models.user import UserInChat
+from shuecm.utils import get_user_profile_text
 from shuecm.validators import valid_id_in_db
 
 bp = Blueprint()
 cache = TTLDictStorage()
-client = VK.get_current().client
-
-
-async def get_data_about_user(current_user: User, in_chat: bool = False, **kwargs):
-    async with client.get(f"https://vk.com/foaf.php?id={current_user.uid}") as resp:
-        resp = await resp.text()
-        parsed = xmltodict.parse(resp)
-        vk_reg_date = (
-            parsed["rdf:RDF"]["foaf:Person"]["ya:created"]["@dc:date"]
-            .replace("-", ".")
-            .replace("T", " | ")
-            .replace("+03:00", "")
-        )
-
-    usr: User = current_user
-    reg_date = time.strftime("%d.%m.%Y | %H:%M:%S", time.localtime(usr.created_time))
-    if in_chat:
-        usr_in_chat: UserInChat = kwargs.pop("user_in_chat")
-        roles = []
-        async for role in usr_in_chat.get_roles():
-            roles.append(role["name"])
-        roles = ", ".join(roles)
-        if not roles:
-            roles = "❌"
-        join_date = time.strftime(
-            "%d.%m.%Y | %H:%M:%S", time.localtime(usr_in_chat.join_date)
-        )
-        text = f"""
-💭 Информация о пользователе:
-
-🌈 ID: {usr.uid}
-💤 Дата регистрации в ВК: {vk_reg_date}
-💤 Дата регистрации в @shuecm: {reg_date}
-⭐ Роли: {roles}
-👤 Дата вступления в беседу: {join_date}
-"""
-    else:
-        text = f"""
-💭 Информация о пользователе:
-
-🌈 ID: {usr.uid}
-💤 Дата регистрации в ВК: {vk_reg_date}
-💤 Дата регистрации в @shuecm: {reg_date}
-👥 Состоит в: {len(usr.accounts)} беседах.
-"""
-    return text
 
 
 @bp.described_handler(
@@ -75,12 +26,12 @@ async def who_i_am_handler(message: types.Message, data: dict):
     usr: User = data["current_user"]
     if message.from_id == message.peer_id:
         return await message.cached_answer(
-            await get_data_about_user(usr, in_chat=False)
+            await get_user_profile_text(usr, in_chat=False)
         )
     else:
         usr_in_chat: UserInChat = data["current_user_in_chat"]
         return await message.cached_answer(
-            await get_data_about_user(usr, in_chat=True, user_in_chat=usr_in_chat)
+            await get_user_profile_text(usr, in_chat=True, user_in_chat=usr_in_chat)
         )
 
 
@@ -121,10 +72,10 @@ async def who_are_you_handler(message: types.Message, data: dict):
             user=usr.pk, chat=data["current_chat"].pk
         )
         await message.answer(
-            await get_data_about_user(usr, in_chat=True, user_in_chat=usr_in_chat)
+            await get_user_profile_text(usr, in_chat=True, user_in_chat=usr_in_chat)
         )
     else:
-        await message.answer(await get_data_about_user(usr, in_chat=False))
+        await message.answer(await get_user_profile_text(usr, in_chat=False))
 
 
 __all__ = ["bp"]

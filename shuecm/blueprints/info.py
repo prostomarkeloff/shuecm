@@ -12,7 +12,8 @@ bp = Blueprint()
 cache = TTLDictStorage()
 
 
-@bp.message_handler(texts=["помощь", "инфа", "help"])
+@bp.described_handler(description="Обработчик для получения информации о боте")
+@bp.message_handler(texts=["помощь", "инфа", "help", "хелп", "помоги", "помогите"])
 @cached_handler(storage=cache, expire=30, for_specify_user=False)
 async def handler(message: types.Message, data: dict):
     users_count: int = await User.count_documents()

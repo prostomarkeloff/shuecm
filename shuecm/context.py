@@ -7,7 +7,7 @@ from db.models.chat import Chat
 from db.models.user import User
 from db.models.user import UserInChat
 
-# it`s will be set in middlewares, may be in args validators.
+# it will be set in middlewares, may be in args validators.
 current_user: ContextVar[User] = ContextVar("current_user")
 current_chat: ContextVar[Chat] = ContextVar("current_chat")
 current_user_in_chat: ContextVar[UserInChat] = ContextVar("current_user_in_chat")

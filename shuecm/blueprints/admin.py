@@ -1,5 +1,5 @@
 """
-Blueprint for informational commands.
+Blueprint for admin commands.
 """
 from vk import types
 from vk import VK
