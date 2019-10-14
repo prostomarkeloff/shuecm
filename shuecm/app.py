@@ -105,12 +105,34 @@ async def run():
     elif PRODUCTION:
         # We use rabbitmq for event dispatching.
         # You can run this code in many processes (via multiprocessing module)
-        # ... for more performance or run many instances of application.
-        raise RuntimeError("Production environment now not setuped.")
+        # for more performance or run many instances of application.
+        from vk.bot_framework.extensions.rabbitmq import RabbitMQ
+
+        dp.setup_extension(RabbitMQ)
+        dp.run_extension("rabbitmq", vk=vk, queue_name="test_queue")
+
+
+def start():
+    """Run many workers of rabbitmq receiver"""
+    manager = TaskManager(vk.loop)
+    manager.add_task(run)
+    manager.run()
 
 
 if __name__ == "__main__":
     # Wrapper over asyncio
-    manager = TaskManager(vk.loop)
-    manager.add_task(run)
-    manager.run()
+    if PRODUCTION:
+        import multiprocessing as mp
+
+        processes = []
+        for i in range(1, 6):
+            process = mp.Process(target=start)
+            processes.append(process)
+            logger.info(f"[{i}] process added!")
+        for index, process in enumerate(processes, start=1):
+            process.start()
+            logger.info(f"[{index}] process started!")
+    else:
+        manager = TaskManager(vk.loop)
+        manager.add_task(run)
+        manager.run()
