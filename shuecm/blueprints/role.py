@@ -18,6 +18,17 @@ bp = Blueprint()
 cache = TTLDictStorage()
 
 
+@bp.message_handler(texts_with_args=["роль"], have_args=[valid_role_name_in_db])
+async def get_role_info_handler(message: types.Message, data: dict):
+    role: Role = data["valid_role_name_in_db_role"]
+    role_info = f"""
+✏ Название: {role.name}.
+⭐ Приоритет: {role.priority}.
+ℹ Полномочия: {', '.join(role.permissions)}.
+    """
+    await message.answer(role_info)
+
+
 @bp.described_handler(
     description="Обработчик для получения информации о ролях в беседе",
     examples=["роли"],
