@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "shuecm"
-version = "0.1.0"
+version = "0.2.0"
 description = "A next generation VK chat manager."
 authors = ["Shue Developers"]
 license = "MIT"
