@@ -1,3 +1,4 @@
+import logging
 import typing
 
 from vk import types
@@ -5,6 +6,8 @@ from vk.bot_framework import NamedRule
 
 from db.structs.status import Permission
 from shuecm.utils import levenshtein
+
+logger = logging.getLogger(__name__)
 
 
 class Texts(NamedRule):
@@ -32,7 +35,7 @@ class Texts(NamedRule):
             if ratio < 1.5:
                 passed = True
                 break
-
+        logger.debug(f"Result of Texts rule - {passed}")
         return passed
 
 
@@ -70,6 +73,7 @@ class TextsWithArgs(Texts):
             if res == splitted_text:
                 passed = True
                 break
+        logger.debug(f"Result of TextsWithArgs rule - {passed}")
         return passed
 
 
@@ -103,6 +107,7 @@ class UserHavePermission(NamedRule):
         if not passed:
             # user should know about it
             await message.answer("Вы не имеете права для этого действия!")
+        logger.debug(f"Result of UserHavePermissions rule - {passed}")
         return passed
 
 

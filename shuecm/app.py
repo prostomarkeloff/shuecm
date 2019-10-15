@@ -58,7 +58,7 @@ def setup_blueprints():
 
 def setup_middlewares():
     """
-    Register middlewares in applcation.
+    Register middlewares in application.
     :return:
     """
     from shuecm.middlewares import (
