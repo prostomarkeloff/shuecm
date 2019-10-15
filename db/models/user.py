@@ -85,6 +85,7 @@ class UserInChat(umongo.Document):  # noqa
     user: User = fields.ReferenceField(User)  # reference to main data about user
     chat: Chat = fields.ReferenceField(Chat)  # reference to current chat
     roles = fields.ListField(fields.ObjectIdField, default=[])
+    warns: int = fields.IntegerField(default=0)
 
     join_date: int = fields.IntegerField(default=time.time)
 
